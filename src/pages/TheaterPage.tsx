@@ -1,55 +1,33 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
+import { InAppBrowser } from '../components/InAppBrowser'
 import { ServiceIcon } from '../components/ServiceIcon'
 import { YouTubeTheater } from '../components/YouTubeTheater'
 import { getService } from '../services'
 
-type Mode = 'watch' | 'login'
-
-const CONNECTED_KEY = 'pilix-connected-services'
-
-function readConnected(): string[] {
-  try {
-    const raw = localStorage.getItem(CONNECTED_KEY)
-    if (!raw) return []
-    const parsed = JSON.parse(raw) as unknown
-    return Array.isArray(parsed) ? parsed.filter((v) => typeof v === 'string') : []
-  } catch {
-    return []
-  }
-}
-
-function writeConnected(ids: string[]) {
-  localStorage.setItem(CONNECTED_KEY, JSON.stringify(ids))
-}
+type Mode = 'watch' | 'login' | 'browse'
 
 export function TheaterPage() {
   const { serviceId } = useParams()
   const service = getService(serviceId)
-  const [mode, setMode] = useState<Mode>('login')
-  const [connected, setConnected] = useState(() => readConnected())
+  const [mode, setMode] = useState<Mode>(serviceId === 'youtube' ? 'watch' : 'browse')
+
+  useEffect(() => {
+    setMode(serviceId === 'youtube' ? 'watch' : 'browse')
+  }, [serviceId])
 
   const frameSrc = useMemo(() => {
     if (!service) return ''
-    return mode === 'login' ? service.loginUrl : service.watchUrl
+    if (mode === 'login') return service.loginUrl
+    if (mode === 'watch') return service.watchUrl
+    return service.homeUrl
   }, [mode, service])
 
   if (!service) {
     return <Navigate to="/" replace />
   }
 
-  const isConnected = connected.includes(service.id)
-
-  const markConnected = () => {
-    const next = Array.from(new Set([...connected, service.id]))
-    setConnected(next)
-    writeConnected(next)
-  }
-
-  const openOfficial = (url: string) => {
-    markConnected()
-    window.open(url, '_blank', 'noopener,noreferrer')
-  }
+  const showYouTubePlayer = service.id === 'youtube' && mode === 'watch'
 
   return (
     <div className="theater" style={{ ['--service-accent' as string]: service.accent }}>
@@ -68,68 +46,36 @@ export function TheaterPage() {
           </div>
         </div>
 
-        {service.id !== 'youtube' ? (
-          <div className="theater__actions">
-            <button
-              type="button"
-              className={mode === 'login' ? 'is-active' : undefined}
-              onClick={() => setMode('login')}
-            >
-              Sign in
-            </button>
-            <button
-              type="button"
-              className={mode === 'watch' ? 'is-active' : undefined}
-              onClick={() => setMode('watch')}
-            >
-              Watch
-            </button>
-          </div>
-        ) : (
-          <div className="theater__actions" aria-hidden="true" />
-        )}
+        <div className="theater__actions">
+          <button
+            type="button"
+            className={mode === 'browse' ? 'is-active' : undefined}
+            onClick={() => setMode('browse')}
+          >
+            Browse
+          </button>
+          <button
+            type="button"
+            className={mode === 'login' ? 'is-active' : undefined}
+            onClick={() => setMode('login')}
+          >
+            Sign in
+          </button>
+          <button
+            type="button"
+            className={mode === 'watch' ? 'is-active' : undefined}
+            onClick={() => setMode('watch')}
+          >
+            Watch
+          </button>
+        </div>
       </header>
 
       <div className="theater__stage">
-        {service.id === 'youtube' ? (
+        {showYouTubePlayer ? (
           <YouTubeTheater />
         ) : (
-          <section className="theater__fallback">
-            <div className="theater__fallback-card">
-              <ServiceIcon service={service} size={72} />
-              <h1>{mode === 'login' ? `Sign in to ${service.name}` : `Watch on ${service.name}`}</h1>
-              <p>
-                Open {service.name} from PiliX TV. You sign in on their official site — we never ask
-                for your password here — then watch in the player tab while PiliX stays your home
-                hub.
-              </p>
-
-              <div className="theater__fallback-actions">
-                <button
-                  type="button"
-                  className="btn btn--primary"
-                  onClick={() => openOfficial(frameSrc)}
-                >
-                  {mode === 'login'
-                    ? `Continue to ${service.shortName} login`
-                    : `Open ${service.shortName} player`}
-                </button>
-                <button
-                  type="button"
-                  className="btn btn--ghost"
-                  onClick={() => openOfficial(service.homeUrl)}
-                >
-                  Visit {service.shortName} site
-                </button>
-              </div>
-
-              <p className="theater__note">
-                {isConnected
-                  ? `${service.shortName} is marked as connected on this device.`
-                  : 'Tip: after you sign in once in the player tab, return here anytime from the orbit.'}
-              </p>
-            </div>
-          </section>
+          <InAppBrowser title={service.name} initialUrl={frameSrc} accent={service.accent} />
         )}
       </div>
     </div>

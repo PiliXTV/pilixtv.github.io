@@ -16,7 +16,7 @@ export function HomePage() {
         <p className="home__wordmark">PiliX TV</p>
         <h1 className="home__headline">One hub. Every stream.</h1>
         <p className="home__lede">
-          Tap a service to sign in and watch without leaving PiliX TV.
+          Tap a service to browse, sign in, and watch inside the PiliX TV browser.
         </p>
       </header>
 

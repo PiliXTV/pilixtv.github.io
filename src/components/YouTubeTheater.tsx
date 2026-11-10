@@ -40,25 +40,26 @@ function extractVideoId(input: string): string | null {
 export function YouTubeTheater() {
   const [query, setQuery] = useState('')
   const [activeId, setActiveId] = useState(STARTERS[0].id)
+  const [searchTerm, setSearchTerm] = useState('')
 
-  const embedSrc = useMemo(
-    () => `https://www.youtube.com/embed/${activeId}?autoplay=0&rel=0`,
-    [activeId],
-  )
+  const embedSrc = useMemo(() => {
+    if (searchTerm) {
+      // Stay inside PiliX TV: use YouTube's embeddable results player surface when possible.
+      return `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(searchTerm)}`
+    }
+    return `https://www.youtube.com/embed/${activeId}?autoplay=0&rel=0`
+  }, [activeId, searchTerm])
 
   const onSubmit = (event: { preventDefault: () => void }) => {
     event.preventDefault()
     const id = extractVideoId(query)
     if (id) {
+      setSearchTerm('')
       setActiveId(id)
       return
     }
     if (query.trim()) {
-      window.open(
-        `https://www.youtube.com/results?search_query=${encodeURIComponent(query.trim())}`,
-        '_blank',
-        'noopener,noreferrer',
-      )
+      setSearchTerm(query.trim())
     }
   }
 
@@ -82,7 +83,7 @@ export function YouTubeTheater() {
               id="yt-query"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Paste a YouTube link or video ID"
+              placeholder="Paste a link, video ID, or search"
               autoComplete="off"
             />
             <button type="submit" className="btn btn--primary">
@@ -91,24 +92,21 @@ export function YouTubeTheater() {
           </div>
         </form>
 
-        <p className="yt__hint">Sign in to YouTube in a secure tab when you need your account.</p>
-        <button
-          type="button"
-          className="btn btn--ghost yt__login"
-          onClick={() =>
-            window.open('https://www.youtube.com', '_blank', 'noopener,noreferrer')
-          }
-        >
-          Open YouTube account
-        </button>
+        <p className="yt__hint">
+          Videos play inside PiliX TV. Use Browse / Sign in above to open YouTube in the PiliX
+          browser.
+        </p>
 
         <ul className="yt__list">
           {STARTERS.map((clip) => (
             <li key={clip.id}>
               <button
                 type="button"
-                className={clip.id === activeId ? 'is-active' : undefined}
-                onClick={() => setActiveId(clip.id)}
+                className={!searchTerm && clip.id === activeId ? 'is-active' : undefined}
+                onClick={() => {
+                  setSearchTerm('')
+                  setActiveId(clip.id)
+                }}
               >
                 {clip.title}
               </button>
