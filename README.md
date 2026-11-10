@@ -16,4 +16,6 @@ npm run build
 npm run preview
 ```
 
+`npm run build` also syncs the production files to `/` and `docs/` so GitHub Pages can serve [pilixtv.github.io](https://pilixtv.github.io).
+
 PiliX TV never collects streaming passwords. Sign-in happens on each service’s official site; the hub keeps navigation inside the PiliX TV shell.
