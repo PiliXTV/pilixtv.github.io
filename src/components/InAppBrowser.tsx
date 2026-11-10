@@ -1,5 +1,5 @@
 import { useEffect, useId, useState } from 'react'
-import { isMobileUserAgent } from '../lib/device'
+import { isInAppBrowser, isMobileUserAgent } from '../lib/device'
 
 type Props = {
   title: string
@@ -19,7 +19,6 @@ function isSafeHttpUrl(value: string): boolean {
 }
 
 function openInThisTab(url: string) {
-  // Same tab — keeps the “PiliX browser” flow without spawning a new tab.
   window.location.assign(url)
 }
 
@@ -30,9 +29,11 @@ export function InAppBrowser({ title, initialUrl, openMode = 'embed' }: Props) {
   const [loading, setLoading] = useState(true)
   const [frameKey, setFrameKey] = useState(0)
   const [mobile, setMobile] = useState(false)
+  const [inApp, setInApp] = useState(false)
 
   useEffect(() => {
     setMobile(isMobileUserAgent())
+    setInApp(isInAppBrowser())
   }, [])
 
   useEffect(() => {
@@ -103,32 +104,57 @@ export function InAppBrowser({ title, initialUrl, openMode = 'embed' }: Props) {
 
         <section className="browser__launch">
           <div className="browser__launch-card">
-            <h1>Open {title} in this tab</h1>
+            <h1>{title} needs desktop web on its own site</h1>
             <p>
-              {title} blocks being framed inside other apps and sends phones to an “unsupported /
-              download the app” screen. PiliX opens it in <strong>this same tab</strong> as desktop
-              web — use your browser Back button to return here.
+              Desktop mode on <strong>PiliX TV</strong> does not carry over. iWant checks the device
+              when <strong>iwanttfc.com</strong> loads — if it still looks like a phone, it forces
+              Get App. Open it in this same tab, then enable desktop mode on that page and reload.
             </p>
 
-            {mobile && (
-              <div className="browser__tip">
-                <strong>On your phone first:</strong>
-                <ol>
-                  <li>Turn on <em>Request Desktop Website</em> (Safari: Aa menu · Chrome: ⋮ menu).</li>
-                  <li>Come back to PiliX and tap Open below.</li>
-                </ol>
-                Without desktop mode, iWant will keep showing Get App.
-              </div>
-            )}
+            <div className="browser__tip">
+              <strong>If you still see Get App:</strong>
+              <ol>
+                <li>
+                  On the iWant page (not PiliX), turn on <em>Request Desktop Website</em>, then
+                  reload.
+                </li>
+                <li>
+                  Safari: <em>Settings → Safari → Request Desktop Website → All Websites</em> (on).
+                </li>
+                <li>
+                  Chrome: open iWant → ⋮ → <em>Desktop site</em>, then reload.
+                </li>
+                {inApp && (
+                  <li>
+                    You are in an in-app browser. Tap <em>Open in Safari/Chrome</em> first — those
+                    keep pushing the app.
+                  </li>
+                )}
+                {!mobile && !inApp && (
+                  <li>
+                    On a computer and still stuck? Clear iWant site data for iwanttfc.com, then open
+                    again from PiliX.
+                  </li>
+                )}
+              </ol>
+            </div>
 
             <div className="browser__fallback-actions">
               <button type="button" className="btn btn--primary" onClick={() => openInThisTab(address)}>
-                Open {title} now
+                Open {title} in this tab
               </button>
-              <button type="button" className="btn btn--ghost" onClick={refresh}>
-                Retry
+              <button
+                type="button"
+                className="btn btn--ghost"
+                onClick={() => openInThisTab('https://www.iwanttfc.com/login/auth')}
+              >
+                Open sign-in page
               </button>
             </div>
+
+            <p className="browser__note">
+              After iWant loads as desktop web, use Back to return to PiliX TV.
+            </p>
           </div>
         </section>
       </div>
