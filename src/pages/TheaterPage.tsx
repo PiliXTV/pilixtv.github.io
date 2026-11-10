@@ -75,7 +75,12 @@ export function TheaterPage() {
         {showYouTubePlayer ? (
           <YouTubeTheater />
         ) : (
-          <InAppBrowser title={service.name} initialUrl={frameSrc} accent={service.accent} />
+          <InAppBrowser
+            title={service.name}
+            initialUrl={frameSrc}
+            accent={service.accent}
+            openMode={service.openMode ?? 'embed'}
+          />
         )}
       </div>
     </div>
