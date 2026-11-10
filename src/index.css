@@ -622,6 +622,72 @@ img {
   z-index: 2;
 }
 
+.browser--launch {
+  background:
+    radial-gradient(circle at 50% 20%, color-mix(in srgb, var(--service-accent) 18%, transparent), transparent 55%),
+    linear-gradient(180deg, #07101f, #030812);
+}
+
+.browser__launch {
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  min-height: 0;
+}
+
+.browser__launch-card {
+  width: min(100%, 460px);
+  text-align: center;
+  display: grid;
+  gap: 0.85rem;
+  justify-items: center;
+  animation: rise-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.browser__launch-card h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 4vw, 1.85rem);
+  letter-spacing: -0.03em;
+}
+
+.browser__launch-card > p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.browser__tip {
+  width: 100%;
+  text-align: left;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(252, 209, 22, 0.28);
+  border-radius: 16px;
+  background: rgba(252, 209, 22, 0.06);
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.browser__tip strong {
+  display: block;
+  color: var(--ink);
+  margin-bottom: 0.35rem;
+}
+
+.browser__tip ol {
+  margin: 0.35rem 0 0.55rem 1.1rem;
+  padding: 0;
+}
+
+.browser__fallback-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  justify-content: center;
+  margin-top: 0.25rem;
+}
+
 @keyframes spin {
   to {
     transform: rotate(360deg);

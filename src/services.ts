@@ -8,7 +8,9 @@ export type StreamingService = {
   watchUrl: string
   accent: string
   accentSoft: string
-  }
+  /** Sites that refuse iframes / force mobile app download should use top-level. */
+  openMode?: 'embed' | 'top-level'
+}
 
 export const SERVICES: StreamingService[] = [
   {
@@ -17,10 +19,12 @@ export const SERVICES: StreamingService[] = [
     shortName: 'iWant',
     tagline: 'Kapamilya shows & movies',
     homeUrl: 'https://www.iwanttfc.com',
-    loginUrl: 'https://www.iwanttfc.com',
+    loginUrl: 'https://www.iwanttfc.com/login/auth',
     watchUrl: 'https://www.iwanttfc.com',
     accent: '#e10600',
     accentSoft: 'rgba(225, 6, 0, 0.28)',
+    // iWant redirects phones to /unsupported (“Get App”) and also resists framing.
+    openMode: 'top-level',
   },
   {
     id: 'netflix',
