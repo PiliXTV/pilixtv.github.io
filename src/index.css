@@ -208,9 +208,9 @@ img {
 
 /* —— Orbit —— */
 .orbit {
-  --orbit-radius: 210px;
+  --orbit-radius: 220px;
   position: relative;
-  width: min(92vw, 560px);
+  width: min(92vw, 580px);
   aspect-ratio: 1;
   display: grid;
   place-items: center;

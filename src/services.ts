@@ -96,6 +96,18 @@ export const SERVICES: StreamingService[] = [
     accentSoft: 'rgba(176, 184, 196, 0.22)',
     canEmbed: false,
   },
+  {
+    id: 'loklok',
+    name: 'Loklok',
+    shortName: 'Loklok',
+    tagline: 'Movies & series on the go',
+    homeUrl: 'https://www.loklok.com',
+    loginUrl: 'https://www.loklok.com',
+    watchUrl: 'https://www.loklok.com',
+    accent: '#ff6a3d',
+    accentSoft: 'rgba(255, 106, 61, 0.28)',
+    canEmbed: false,
+  },
 ]
 
 export function getService(id: string | undefined): StreamingService | undefined {

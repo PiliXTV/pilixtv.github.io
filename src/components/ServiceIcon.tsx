@@ -156,6 +156,26 @@ export function ServiceIcon({ service, size = 64 }: Props) {
           </text>
         </svg>
       )
+    case 'loklok':
+      return (
+        <svg {...common}>
+          <rect width="64" height="64" rx="16" fill="#1a0c08" />
+          <circle cx="32" cy="30" r="14" fill="#ff6a3d" />
+          <path d="M27 30l5 5 8-9" fill="none" stroke="#1a0c08" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+          <text
+            x="32"
+            y="54"
+            textAnchor="middle"
+            fill="#ffb498"
+            fontFamily="Figtree, sans-serif"
+            fontSize="8"
+            fontWeight="700"
+            letterSpacing="1"
+          >
+            LOKLOK
+          </text>
+        </svg>
+      )
     default:
       return (
         <svg {...common}>

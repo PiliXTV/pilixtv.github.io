@@ -1,6 +1,6 @@
 # PiliX TV
 
-Filipino streaming hub — launch iWant, Netflix, Disney+, Prime Video, Viu, YouTube, and HBO from one place, with your PiliX badge at the center.
+Filipino streaming hub for [pilixtv.github.io](https://pilixtv.github.io) — launch iWant, Netflix, Disney+, Prime Video, Viu, YouTube, HBO, and Loklok from one place, with your PiliX badge at the center.
 
 ## Develop
 
