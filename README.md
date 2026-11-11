@@ -17,6 +17,15 @@ npm run build
 
 Publishes `dist/`, syncs to repo root + `docs/` for GitHub Pages.
 
+## Vercel (`pilixtv.vercel.app`)
+
+```bash
+npm run build:vercel
+npx vercel --prod
+```
+
+Or connect this GitHub repo in the [Vercel dashboard](https://vercel.com/new): framework **Vite**, build `npm run build:vercel`, output `dist`. Name the project **`pilixtv`** to get `https://pilixtv.vercel.app`.
+
 ## Custom camera feeds
 
 Paste ClearKey DASH feeds in the browser console (or a small settings helper):
