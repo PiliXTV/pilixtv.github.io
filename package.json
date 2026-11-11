@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "cp index.source.html index.html && vite",
     "build": "cp index.source.html index.html && tsc -b && vite build && node scripts/sync-pages.mjs",
+    "build:vercel": "cp index.source.html index.html && tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview"
   },

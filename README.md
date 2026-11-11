@@ -1,6 +1,6 @@
 # PiliX TV
 
-Live multi-camera stream player for [pilixtv.github.io](https://pilixtv.github.io) — Main, Dining, External, and a 2×2 All grid. Layout and controls follow the PBB30 live player pattern (floating camera nav, theme toggle, zoom/pan).
+[pilixtv.github.io](https://pilixtv.github.io) / `pilixtv.vercel.app` — **PBB collab 3.0 Livestream** (multi-cam player) and **PBB collab 3.0 Ranker** (Big 4 picker migrated from pbbcollab3.github.io), with the nominated housemates float on load.
 
 ## Develop
 

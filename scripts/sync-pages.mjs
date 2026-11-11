@@ -25,6 +25,7 @@ for (const name of [
   'pilix-logo.jpg',
   'live-stream4.css',
   'live-stream4.js',
+  'app-shell.css',
   '.nojekyll',
 ]) {
   const from = join(dist, name)
@@ -34,6 +35,11 @@ for (const name of [
 rmSync(join(root, 'js'), { recursive: true, force: true })
 if (existsSync(join(dist, 'js'))) {
   cpSync(join(dist, 'js'), join(root, 'js'), { recursive: true })
+}
+
+rmSync(join(root, 'ranker'), { recursive: true, force: true })
+if (existsSync(join(dist, 'ranker'))) {
+  cpSync(join(dist, 'ranker'), join(root, 'ranker'), { recursive: true })
 }
 
 writeFileSync(join(root, '.nojekyll'), '')
