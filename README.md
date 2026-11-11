@@ -1,6 +1,6 @@
 # PiliX TV
 
-Filipino streaming hub for [pilixtv.github.io](https://pilixtv.github.io) — launch iWant, Netflix, Disney+, Prime Video, Viu, YouTube, HBO, and Loklok from one place, with your PiliX badge at the center.
+Live multi-camera stream player for [pilixtv.github.io](https://pilixtv.github.io) — Main, Dining, External, and a 2×2 All grid. Layout and controls follow the PBB30 live player pattern (floating camera nav, theme toggle, zoom/pan).
 
 ## Develop
 
@@ -9,13 +9,28 @@ npm install
 npm run dev
 ```
 
-## Build
+## Build / Pages
 
 ```bash
 npm run build
-npm run preview
 ```
 
-`npm run build` also syncs the production files to `/` and `docs/` so GitHub Pages can serve [pilixtv.github.io](https://pilixtv.github.io).
+Publishes `dist/`, syncs to repo root + `docs/` for GitHub Pages.
 
-PiliX TV never collects streaming passwords. Sign-in happens on each service’s official site; the hub keeps navigation inside the PiliX TV shell.
+## Custom camera feeds
+
+Paste ClearKey DASH feeds in the browser console (or a small settings helper):
+
+```js
+localStorage.setItem(
+  'zv_custom_servers_v1',
+  JSON.stringify({
+    1: { mpdUrl: 'https://…/manifest.mpd', keyId: '…', key: '…' },
+    2: { mpdUrl: 'https://…/manifest.mpd', keyId: '…', key: '…' },
+    3: { mpdUrl: 'https://…/manifest.mpd', keyId: '…', key: '…' },
+  }),
+)
+location.reload()
+```
+
+Default build ships public demo DASH clips so the player UI works without credentials. Official PBB All Access belongs on [iWantTFC](https://www.iwanttfc.com).
