@@ -1,0 +1,53 @@
+.app-tabs {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 10px 14px 0;
+  display: flex;
+  gap: 6px;
+}
+
+.app-tab {
+  flex: 1 1 0;
+  min-width: 0;
+  border: 1px solid var(--border-color);
+  background: var(--card-bg);
+  color: var(--text-muted);
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-family: "Outfit", sans-serif;
+  font-size: clamp(12px, 2.8vw, 14px);
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.app-tab:hover {
+  color: var(--text-main);
+  background: var(--hover-bg);
+}
+
+.app-tab.is-active {
+  background: var(--text-main);
+  color: var(--bg-color);
+  border-color: transparent;
+}
+
+#panel-livestream[hidden],
+#panel-ranker[hidden] {
+  display: none !important;
+}
+
+@media (max-width: 560px) {
+  .app-tabs {
+    flex-direction: column;
+  }
+  .app-tab {
+    white-space: normal;
+    border-radius: 14px;
+    text-align: center;
+    line-height: 1.25;
+  }
+}

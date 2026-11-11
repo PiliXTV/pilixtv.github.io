@@ -2,15 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>PiliX TV — Live</title>
+    <title>PiliX TV — PBB Collab 3.0</title>
     <meta
       name="description"
-      content="PiliX TV live multi-camera stream player — Main, Dining, External, and All-cameras grid."
+      content="PiliX TV — PBB Collab 3.0 Livestream and Big 4 Ranker."
     />
-    <meta property="og:title" content="PiliX TV — Live" />
+    <meta property="og:title" content="PiliX TV — PBB Collab 3.0" />
     <meta
       property="og:description"
-      content="Watch live cameras in a clean multi-view player with dark/light themes."
+      content="Watch PBB Collab 3.0 livestream cameras and rank your Kapamilya + Kapuso Big 4."
     />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="referrer" content="no-referrer" />
@@ -18,7 +18,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link
@@ -26,11 +26,14 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <link rel="stylesheet" href="/live-stream4.css" />
+    <link rel="stylesheet" href="/app-shell.css" />
+    <link rel="stylesheet" href="/ranker/styles.css" />
+    <link rel="stylesheet" href="/ranker/ranker-theme.css" />
     <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.3.6/dist/shaka-player.compiled.js"></script>
     <script src="/js/theme.js"></script>
     <script type="module" crossorigin src="/assets/index-P2Xu9kJm.js"></script>
   </head>
-  <body>
+  <body data-app-tab="livestream">
     <header class="site-header">
       <div class="header-inner">
         <div class="brand">
@@ -90,62 +93,198 @@
       </div>
     </header>
 
-    <div class="player-layout" id="main-content">
-      <div id="player-container"></div>
+    <div class="app-tabs" role="tablist" aria-label="PiliX sections">
+      <button
+        type="button"
+        class="app-tab is-active"
+        role="tab"
+        data-app-tab="livestream"
+        aria-selected="true"
+      >
+        PBB collab 3.0 Livestream
+      </button>
+      <button
+        type="button"
+        class="app-tab"
+        role="tab"
+        data-app-tab="ranker"
+        aria-selected="false"
+      >
+        PBB collab 3.0 Ranker
+      </button>
+    </div>
 
-      <div class="meta-container">
-        <div class="title-group">
-          <div class="video-title" id="main-title">PiliX Live Stream</div>
-          <div
-            class="viewer-telemetry-row"
-            id="viewer-telemetry-row"
-            aria-label="Viewer breakdown"
-          >
-            <div class="vt-pill vt-total">
-              <span class="live-viewer-dot"></span>
-              <strong id="meta-viewer-count" class="mono-num">1</strong>
-              <span>watching now</span>
-            </div>
-            <div class="vt-cameras">
-              <span class="vt-cam-item" title="Watching Main Stream">
-                <i class="fas fa-tv"></i> Main:
-                <strong id="meta-cam-1-count" class="mono-num">1</strong>
-              </span>
-              <span class="vt-sep" aria-hidden="true">·</span>
-              <span class="vt-cam-item" title="Watching Dining Area">
-                <i class="fas fa-utensils"></i> Dining:
-                <strong id="meta-cam-2-count" class="mono-num">0</strong>
-              </span>
-              <span class="vt-sep" aria-hidden="true">·</span>
-              <span class="vt-cam-item" title="Watching External Den">
-                <i class="fas fa-door-open"></i> External:
-                <strong id="meta-cam-3-count" class="mono-num">0</strong>
-              </span>
-              <span class="vt-sep" aria-hidden="true">·</span>
-              <span class="vt-cam-item" title="Watching All Cameras (2x2 Grid)">
-                <i class="fas fa-table-cells-large"></i> All:
-                <strong id="meta-cam-all-count" class="mono-num">0</strong>
-              </span>
+    <section id="panel-livestream" role="tabpanel">
+      <div class="player-layout" id="main-content">
+        <div id="player-container"></div>
+
+        <div class="meta-container">
+          <div class="title-group">
+            <div class="video-title" id="main-title">PBB collab 3.0 Livestream</div>
+            <div
+              class="viewer-telemetry-row"
+              id="viewer-telemetry-row"
+              aria-label="Viewer breakdown"
+            >
+              <div class="vt-pill vt-total">
+                <span class="live-viewer-dot"></span>
+                <strong id="meta-viewer-count" class="mono-num">1</strong>
+                <span>watching now</span>
+              </div>
+              <div class="vt-cameras">
+                <span class="vt-cam-item" title="Watching Main Stream">
+                  <i class="fas fa-tv"></i> Main:
+                  <strong id="meta-cam-1-count" class="mono-num">1</strong>
+                </span>
+                <span class="vt-sep" aria-hidden="true">·</span>
+                <span class="vt-cam-item" title="Watching Dining Area">
+                  <i class="fas fa-utensils"></i> Dining:
+                  <strong id="meta-cam-2-count" class="mono-num">0</strong>
+                </span>
+                <span class="vt-sep" aria-hidden="true">·</span>
+                <span class="vt-cam-item" title="Watching External Den">
+                  <i class="fas fa-door-open"></i> External:
+                  <strong id="meta-cam-3-count" class="mono-num">0</strong>
+                </span>
+                <span class="vt-sep" aria-hidden="true">·</span>
+                <span class="vt-cam-item" title="Watching All Cameras (2x2 Grid)">
+                  <i class="fas fa-table-cells-large"></i> All:
+                  <strong id="meta-cam-all-count" class="mono-num">0</strong>
+                </span>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      <nav class="bottom-nav" id="server-selector" aria-label="Camera selector">
+        <button type="button" class="nav-btn active" aria-label="Main Stream">
+          <i class="fas fa-tv"></i><span>Main</span>
+        </button>
+        <button type="button" class="nav-btn" aria-label="Dining Area">
+          <i class="fas fa-utensils"></i><span>Dining</span>
+        </button>
+        <button type="button" class="nav-btn" aria-label="External Den">
+          <i class="fas fa-door-open"></i><span>External</span>
+        </button>
+        <button type="button" class="nav-btn" aria-label="All Cameras">
+          <i class="fas fa-table-cells-large"></i><span>All</span>
+        </button>
+      </nav>
+    </section>
+
+    <section id="panel-ranker" role="tabpanel" hidden>
+      <div id="top-banner">
+        <p id="version">v3.0.20</p>
+        <img id="banner-image" src="/ranker/assets/logo_pbb.png" alt="Pinoy Big Brother Collab 3.0" />
+        <p id="banner-title">WHO WINS... YOU DECIDE!</p>
+        <p id="banner-subtitle">Who are your KAPAMILYA and KAPUSO BIG 4?</p>
+      </div>
+
+      <div class="flex-container padded-box">
+        <div>
+          <div id="table">
+            <div id="table__filter-container">
+              <input
+                id="table__filter-input"
+                oninput="filterHousemates(event)"
+                type="text"
+                placeholder="Search Housemate/s"
+                aria-label="Search housemates"
+              />
+            </div>
+
+            <div id="status-filters" class="filter-chips" role="group" aria-label="Housemate filters">
+              <button type="button" class="filter-chip is-active" data-filter="all" onclick="setStatusFilter('all', this)">All</button>
+              <button type="button" class="filter-chip chip-kapamilya" data-filter="kapamilya" onclick="setStatusFilter('kapamilya', this)">Kapamilya Housemates</button>
+              <button type="button" class="filter-chip chip-kapuso" data-filter="kapuso" onclick="setStatusFilter('kapuso', this)">Kapuso Housemates</button>
+              <button type="button" class="filter-chip chip-nominated" data-filter="nominated" onclick="setStatusFilter('nominated', this)">Nominated</button>
+              <button type="button" class="filter-chip chip-evicted" data-filter="evicted" onclick="setStatusFilter('evicted', this)">Evicted</button>
+              <button type="button" class="filter-chip chip-immunity" data-filter="immunity" onclick="setStatusFilter('immunity', this)">With Immunity</button>
+              <button type="button" class="filter-chip chip-safe" data-filter="safe" onclick="setStatusFilter('safe', this)">Safe</button>
+            </div>
+
+            <div id="table__entry-container"></div>
+          </div>
+
+          <div id="sharelink-container">
+            <input type="button" id="getlink-button" value="Get link" onclick="generateShareLink()" />
+            <input type="text" placeholder="http://" id="getlink-textbox" readonly />
+            <input type="button" id="copylink-button" value="Copy" onclick="copyLink()" />
+          </div>
+          <div id="saveimage-container">
+            <input type="button" id="saveimage-button" value="Save Big 4 Image" onclick="saveBig4Image()" />
+            <p id="saveimage-hint">Preview your Kapamilya + Kapuso Big 4 photo, then download</p>
+          </div>
+        </div>
+
+        <div id="parent-ranking">
+          <div id="ranking__pyramid" class="ranking__pyramid pyramid-kapamilya">
+            <div class="ranking__title"><strong>KAPAMILYA BIG 4</strong></div>
+            <div class="ranking__row"></div>
+            <div class="ranking__row"></div>
+            <div class="ranking__row"></div>
+            <div class="ranking__row"></div>
+          </div>
+          <div id="ranking__pyramid2" class="ranking__pyramid pyramid-kapuso">
+            <div class="ranking__title"><strong>KAPUSO BIG 4</strong></div>
+            <div class="ranking__row"></div>
+            <div class="ranking__row"></div>
+            <div class="ranking__row"></div>
+            <div class="ranking__row"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="export-preview-modal" class="export-modal" hidden aria-hidden="true">
+        <div class="export-modal__backdrop" onclick="closeExportPreview()"></div>
+        <div class="export-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="export-preview-title">
+          <div class="export-modal__header">
+            <h2 id="export-preview-title">THIS IS YOUR KAPAMILYA AND KAPUSO BIG 4:</h2>
+            <button type="button" id="export-preview-close" class="export-modal__close" onclick="closeExportPreview()" aria-label="Close preview">×</button>
+          </div>
+          <div class="export-modal__body">
+            <img id="export-preview-image" alt="Generated Kapamilya and Kapuso Big 4 preview" />
+          </div>
+          <div class="export-modal__actions">
+            <button type="button" id="export-preview-cancel" onclick="closeExportPreview()">Close</button>
+            <button type="button" id="export-preview-download" onclick="downloadExportPreview()">Download</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Floating nominated housemates (shown on first load for both tabs) -->
+    <div id="nominated-float" class="nominated-float" hidden aria-hidden="true" onclick="closeNominatedFloat()">
+      <div class="nominated-float__backdrop" aria-hidden="true"></div>
+      <div
+        class="nominated-float__content"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="nominated-float-kapamilya-title nominated-float-kapuso-title"
+        onclick="event.stopPropagation()"
+      >
+        <button
+          type="button"
+          id="nominated-float-close"
+          class="nominated-float__close"
+          onclick="closeNominatedFloat()"
+          aria-label="Close nominated housemates"
+        >×</button>
+        <section class="nominated-float__section" aria-labelledby="nominated-float-kapamilya-title">
+          <h2 id="nominated-float-kapamilya-title" class="nominated-float__title nominated-float__title--kapamilya">NOMINATED KAPAMILYA HOUSEMATES</h2>
+          <div id="nominated-float-kapamilya" class="nominated-float__cards"></div>
+        </section>
+        <section class="nominated-float__section" aria-labelledby="nominated-float-kapuso-title">
+          <h2 id="nominated-float-kapuso-title" class="nominated-float__title nominated-float__title--kapuso">NOMINATED KAPUSO HOUSEMATES</h2>
+          <div id="nominated-float-kapuso" class="nominated-float__cards"></div>
+        </section>
+      </div>
     </div>
 
-    <nav class="bottom-nav" id="server-selector" aria-label="Camera selector">
-      <button type="button" class="nav-btn active" aria-label="Main Stream">
-        <i class="fas fa-tv"></i><span>Main</span>
-      </button>
-      <button type="button" class="nav-btn" aria-label="Dining Area">
-        <i class="fas fa-utensils"></i><span>Dining</span>
-      </button>
-      <button type="button" class="nav-btn" aria-label="External Den">
-        <i class="fas fa-door-open"></i><span>External</span>
-      </button>
-      <button type="button" class="nav-btn" aria-label="All Cameras">
-        <i class="fas fa-table-cells-large"></i><span>All</span>
-      </button>
-    </nav>
+    <div id="visitor-badge" class="visitor-badge" hidden aria-hidden="true" aria-live="polite">
+      You’re the <span class="visitor-number">#<span id="visitor-count">0</span></span> visitor.
+    </div>
 
     <div id="stream-settings-modal" class="zv-error-overlay" hidden>
       <div class="zv-error-card" role="dialog" aria-modal="true" aria-labelledby="stream-settings-title">
@@ -179,9 +318,16 @@
       </div>
     </div>
 
-    <!-- Vite keeps this module so the Pages build stays intact; player is classic script. -->
     <div id="root" hidden></div>
+    <script src="/js/app-tabs.js"></script>
     <script src="/live-stream4.js"></script>
     <script src="/js/stream-settings.js"></script>
+    <script src="/ranker/scripts/csv.js"></script>
+    <script src="/ranker/scripts/dragdrop.js"></script>
+    <script src="/ranker/scripts/housematesort.js"></script>
+    <script src="/ranker/scripts/main.js"></script>
+    <script src="/ranker/scripts/exportimage.js"></script>
+    <script src="/ranker/scripts/nominatedfloat.js"></script>
+    <script src="/ranker/scripts/visitor.js"></script>
   </body>
 </html>

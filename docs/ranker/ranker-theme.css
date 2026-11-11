@@ -1,0 +1,170 @@
+/* PiliX dark UI overlay for the Big 4 Ranker (Outfit + livestream tokens) */
+#panel-ranker {
+  --cream: #09090b;
+  --cream-deep: #18181b;
+  --ink: #ffffff;
+  --muted: #a1a1aa;
+  --panel: #18181b;
+  --panel-border: #27272a;
+  --search-text: #71717a;
+  --banner-gold: #fbbf24;
+  color: var(--ink);
+  font-family: "Outfit", sans-serif;
+  background: transparent;
+  min-height: calc(100vh - 120px);
+  padding: 0 0 40px;
+}
+
+#panel-ranker #top-banner {
+  background: color-mix(in srgb, var(--card-bg, #18181b) 92%, transparent);
+  background-image: none;
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-float, 0 10px 30px rgba(0, 0, 0, 0.6));
+  color: var(--ink);
+  min-height: 0;
+  margin: 18px 20px 8px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#panel-ranker #version {
+  font-family: "JetBrains Mono", monospace;
+  color: var(--muted);
+}
+
+#panel-ranker #banner-title {
+  font-family: "Outfit", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+  text-shadow: none;
+}
+
+#panel-ranker #banner-subtitle {
+  color: var(--muted);
+  text-shadow: none;
+}
+
+#panel-ranker #banner-image {
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.45));
+}
+
+#panel-ranker .flex-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 8px 12px 24px;
+}
+
+#panel-ranker #table,
+#panel-ranker .ranking__pyramid {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  box-shadow: var(--shadow-subtle, 0 4px 12px rgba(0, 0, 0, 0.4));
+}
+
+#panel-ranker #table__filter-input {
+  background-color: #09090b;
+  color: var(--ink);
+  border-color: var(--panel-border);
+}
+
+#panel-ranker .filter-chip {
+  background: #09090b;
+  color: var(--muted);
+  border-color: var(--panel-border);
+}
+
+#panel-ranker .filter-chip.is-active {
+  color: #09090b;
+  background: #ffffff;
+}
+
+#panel-ranker .filter-chip.chip-kapamilya.is-active {
+  color: #fff;
+  background: var(--kapamilya);
+}
+
+#panel-ranker .filter-chip.chip-kapuso.is-active {
+  color: #fff;
+  background: var(--kapuso);
+}
+
+#panel-ranker .filter-chip.chip-nominated.is-active,
+#panel-ranker .filter-chip.chip-evicted.is-active,
+#panel-ranker .filter-chip.chip-immunity.is-active,
+#panel-ranker .filter-chip.chip-safe.is-active {
+  color: #fff;
+}
+
+#panel-ranker #getlink-button,
+#panel-ranker #saveimage-button,
+#panel-ranker #copylink-button {
+  font-family: "Outfit", sans-serif;
+}
+
+#panel-ranker #getlink-textbox {
+  background: #09090b;
+  color: var(--ink);
+  border: 1px solid var(--panel-border);
+}
+
+#panel-ranker .ranking__title {
+  font-family: "Outfit", sans-serif;
+  color: var(--ink);
+}
+
+#panel-ranker .export-modal__dialog {
+  background: #18181b;
+  border-color: #27272a;
+  color: #fff;
+}
+
+#panel-ranker .export-modal__header h2 {
+  font-family: "Outfit", sans-serif;
+  color: #fff;
+}
+
+#panel-ranker .export-modal__actions button {
+  font-family: "Outfit", sans-serif;
+}
+
+/* Nominated float stays on brand but readable on dark shell */
+.nominated-float__backdrop {
+  background: rgba(9, 9, 11, 0.72) !important;
+  backdrop-filter: blur(10px);
+}
+
+.nominated-float__close {
+  background: #18181b !important;
+  color: #fff !important;
+  border: 1px solid #27272a;
+}
+
+.nominated-float__title {
+  font-family: "Outfit", sans-serif !important;
+  background: #18181b !important;
+  color: #fff;
+  border: 1px solid #27272a;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.45);
+}
+
+.visitor-badge {
+  background: #18181b !important;
+  color: #fff !important;
+  border: 1px solid #27272a;
+  font-family: "Outfit", sans-serif;
+  bottom: calc(88px + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+body[data-app-tab="ranker"] .bottom-nav,
+body[data-app-tab="ranker"] #header-viewer-badge,
+body[data-app-tab="ranker"] #stream-settings-toggle,
+body[data-app-tab="ranker"] #tutorial-toggle {
+  display: none !important;
+}
+
+body[data-app-tab="livestream"] #visitor-badge {
+  display: none !important;
+}
