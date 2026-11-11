@@ -1,23 +1,187 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/jpeg" href="/pilix-logo.jpg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PiliX TV — Live</title>
     <meta
       name="description"
-      content="PiliX TV — your Filipino streaming hub. Launch iWant, Netflix, Disney+, Prime Video, Viu, YouTube, HBO, and Loklok from one place."
+      content="PiliX TV live multi-camera stream player — Main, Dining, External, and All-cameras grid."
     />
+    <meta property="og:title" content="PiliX TV — Live" />
+    <meta
+      property="og:description"
+      content="Watch live cameras in a clean multi-view player with dark/light themes."
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
+    <link rel="icon" type="image/jpeg" href="/pilix-logo.jpg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <title>PiliX TV</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="/live-stream4.css" />
+    <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.3.6/dist/shaka-player.compiled.js"></script>
+    <script src="/js/theme.js"></script>
   </head>
   <body>
-    <div id="root"></div>
+    <header class="site-header">
+      <div class="header-inner">
+        <div class="brand">
+          <img class="brand-logo" src="/pilix-logo.jpg" alt="" width="22" height="22" />
+          <span class="brand-name">PiliX TV</span>
+          <div
+            class="live-viewer-badge"
+            id="header-viewer-badge"
+            title="Viewers on this device session"
+            aria-live="polite"
+          >
+            <span class="live-viewer-dot"></span>
+            <i class="fas fa-eye" aria-hidden="true"></i>
+            <span id="live-viewer-count" class="mono-num">1</span>
+            <span class="live-viewer-label">watching</span>
+          </div>
+        </div>
+        <div class="header-right">
+          <a
+            class="icon-btn"
+            href="https://www.iwanttfc.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Open iWantTFC"
+            title="Watch on iWantTFC"
+          >
+            <i class="fas fa-external-link-alt"></i>
+          </a>
+          <button
+            id="stream-settings-toggle"
+            class="icon-btn"
+            type="button"
+            aria-label="Stream settings"
+            title="Stream settings"
+          >
+            <i class="fas fa-gear"></i>
+          </button>
+          <button
+            id="tutorial-toggle"
+            class="icon-btn"
+            type="button"
+            aria-label="Show player guide"
+            title="How to use player"
+          >
+            <i class="fas fa-question"></i>
+          </button>
+          <button
+            id="theme-toggle"
+            class="icon-btn"
+            type="button"
+            aria-label="Toggle light / dark theme"
+            title="Toggle theme"
+          >
+            <i class="fas fa-sun"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="player-layout" id="main-content">
+      <div id="player-container"></div>
+
+      <div class="meta-container">
+        <div class="title-group">
+          <div class="video-title" id="main-title">PiliX Live Stream</div>
+          <div
+            class="viewer-telemetry-row"
+            id="viewer-telemetry-row"
+            aria-label="Viewer breakdown"
+          >
+            <div class="vt-pill vt-total">
+              <span class="live-viewer-dot"></span>
+              <strong id="meta-viewer-count" class="mono-num">1</strong>
+              <span>watching now</span>
+            </div>
+            <div class="vt-cameras">
+              <span class="vt-cam-item" title="Watching Main Stream">
+                <i class="fas fa-tv"></i> Main:
+                <strong id="meta-cam-1-count" class="mono-num">1</strong>
+              </span>
+              <span class="vt-sep" aria-hidden="true">·</span>
+              <span class="vt-cam-item" title="Watching Dining Area">
+                <i class="fas fa-utensils"></i> Dining:
+                <strong id="meta-cam-2-count" class="mono-num">0</strong>
+              </span>
+              <span class="vt-sep" aria-hidden="true">·</span>
+              <span class="vt-cam-item" title="Watching External Den">
+                <i class="fas fa-door-open"></i> External:
+                <strong id="meta-cam-3-count" class="mono-num">0</strong>
+              </span>
+              <span class="vt-sep" aria-hidden="true">·</span>
+              <span class="vt-cam-item" title="Watching All Cameras (2x2 Grid)">
+                <i class="fas fa-table-cells-large"></i> All:
+                <strong id="meta-cam-all-count" class="mono-num">0</strong>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <nav class="bottom-nav" id="server-selector" aria-label="Camera selector">
+      <button type="button" class="nav-btn active" aria-label="Main Stream">
+        <i class="fas fa-tv"></i><span>Main</span>
+      </button>
+      <button type="button" class="nav-btn" aria-label="Dining Area">
+        <i class="fas fa-utensils"></i><span>Dining</span>
+      </button>
+      <button type="button" class="nav-btn" aria-label="External Den">
+        <i class="fas fa-door-open"></i><span>External</span>
+      </button>
+      <button type="button" class="nav-btn" aria-label="All Cameras">
+        <i class="fas fa-table-cells-large"></i><span>All</span>
+      </button>
+    </nav>
+
+    <div id="stream-settings-modal" class="zv-error-overlay" hidden>
+      <div class="zv-error-card" role="dialog" aria-modal="true" aria-labelledby="stream-settings-title">
+        <div class="zv-error-top">
+          <div class="zv-error-status is-warning">
+            <i class="fas fa-gear"></i>
+            <span>Stream settings</span>
+          </div>
+          <button type="button" class="icon-btn" id="stream-settings-close" aria-label="Close settings">
+            <i class="fas fa-xmark"></i>
+          </button>
+        </div>
+        <h2 class="zv-error-title" id="stream-settings-title">Camera DASH feeds</h2>
+        <p class="zv-error-desc">
+          Default demo clips power the UI. Paste your own ClearKey DASH
+          <code>mpdUrl</code> / <code>keyId</code> / <code>key</code> per camera to replace them.
+          Official PBB All Access stays on iWantTFC.
+        </p>
+        <label class="settings-label" for="stream-settings-json">JSON config</label>
+        <textarea
+          id="stream-settings-json"
+          class="settings-json"
+          rows="10"
+          spellcheck="false"
+          placeholder='{"1":{"mpdUrl":"https://…/manifest.mpd","keyId":"…","key":"…"}}'
+        ></textarea>
+        <div class="zv-error-actions">
+          <button type="button" class="zv-retry-btn" id="stream-settings-save">Save &amp; reload</button>
+          <button type="button" class="settings-clear" id="stream-settings-clear">Clear overrides</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vite keeps this module so the Pages build stays intact; player is classic script. -->
+    <div id="root" hidden></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script src="/live-stream4.js"></script>
+    <script src="/js/stream-settings.js"></script>
   </body>
 </html>
