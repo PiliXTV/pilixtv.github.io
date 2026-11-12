@@ -62,15 +62,6 @@
             <i class="fas fa-external-link-alt"></i>
           </a>
           <button
-            id="stream-settings-toggle"
-            class="icon-btn"
-            type="button"
-            aria-label="Stream settings"
-            title="Stream settings"
-          >
-            <i class="fas fa-gear"></i>
-          </button>
-          <button
             id="tutorial-toggle"
             class="icon-btn"
             type="button"
@@ -83,10 +74,10 @@
             id="theme-toggle"
             class="icon-btn"
             type="button"
-            aria-label="Toggle light / dark theme"
-            title="Toggle theme"
+            aria-label="Toggle dark mode"
+            title="Toggle dark mode"
           >
-            <i class="fas fa-sun"></i>
+            <i class="fas fa-moon" aria-hidden="true"></i>
           </button>
         </div>
       </div>
@@ -109,7 +100,7 @@
         data-app-tab="ranker"
         aria-selected="false"
       >
-        PBB collab 3.0 Ranker
+        PBB collab 3.0 Big 4 Ranker
       </button>
     </div>
 
@@ -175,7 +166,12 @@
     <section id="panel-ranker" role="tabpanel" hidden>
       <div id="top-banner">
         <p id="version">v3.0.20</p>
-        <img id="banner-image" src="/ranker/assets/logo_pbb.png" alt="Pinoy Big Brother Collab 3.0" />
+        <img
+          id="banner-image"
+          class="banner-image--pixel"
+          src="/ranker/assets/logo_pbb_pixel.png"
+          alt="PBB Collab 3.0"
+        />
         <p id="banner-title">WHO WINS... YOU DECIDE!</p>
         <p id="banner-subtitle">Who are your KAPAMILYA and KAPUSO BIG 4?</p>
       </div>
@@ -285,43 +281,10 @@
       You’re the <span class="visitor-number">#<span id="visitor-count">0</span></span> visitor.
     </div>
 
-    <div id="stream-settings-modal" class="zv-error-overlay" hidden>
-      <div class="zv-error-card" role="dialog" aria-modal="true" aria-labelledby="stream-settings-title">
-        <div class="zv-error-top">
-          <div class="zv-error-status is-warning">
-            <i class="fas fa-gear"></i>
-            <span>Stream settings</span>
-          </div>
-          <button type="button" class="icon-btn" id="stream-settings-close" aria-label="Close settings">
-            <i class="fas fa-xmark"></i>
-          </button>
-        </div>
-        <h2 class="zv-error-title" id="stream-settings-title">Camera DASH feeds</h2>
-        <p class="zv-error-desc">
-          Default demo clips power the UI. Paste your own ClearKey DASH
-          <code>mpdUrl</code> / <code>keyId</code> / <code>key</code> per camera to replace them.
-          Official PBB All Access stays on iWantTFC.
-        </p>
-        <label class="settings-label" for="stream-settings-json">JSON config</label>
-        <textarea
-          id="stream-settings-json"
-          class="settings-json"
-          rows="10"
-          spellcheck="false"
-          placeholder='{"1":{"mpdUrl":"https://…/manifest.mpd","keyId":"…","key":"…"}}'
-        ></textarea>
-        <div class="zv-error-actions">
-          <button type="button" class="zv-retry-btn" id="stream-settings-save">Save &amp; reload</button>
-          <button type="button" class="settings-clear" id="stream-settings-clear">Clear overrides</button>
-        </div>
-      </div>
-    </div>
-
     <div id="root" hidden></div>
     <script type="module" src="/src/main.tsx"></script>
     <script src="/js/app-tabs.js"></script>
     <script src="/live-stream4.js"></script>
-    <script src="/js/stream-settings.js"></script>
     <script src="/ranker/scripts/csv.js"></script>
     <script src="/ranker/scripts/dragdrop.js"></script>
     <script src="/ranker/scripts/housematesort.js"></script>

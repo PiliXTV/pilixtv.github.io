@@ -74,7 +74,7 @@
             name: "Main Stream",
             short: "Main",
             icon: "fa-tv",
-            mpdUrl: "https://absp-live.akamaized.net/dash/live/2099522/pbbcollab30allaccesslivestream/manifest.mpd?app_bundle=&app_name=iwant&app_store_url=&channel_name=PBBCollab30AllAccessLivestream&conparid=09f9149f-acaa-42ca-a18f-5e2735f5de6a&contentType=Live&content_id=09f9149f-acaa-42ca-a18f-5e2735f5de6a&content_livestream=1&content_producer_name=ABS-CBN&coppa=0&did=5a69839e-1bcd-53d9-9577-1718f425e1ef&dnt=0&dur=50400&gdpr=0&gdpr_consent=0&genre=Reality&ifa_type=PPID&language=fil&lmt=0&network_name=ABS-CBN&pmxd=%7B%7BPOD_MAX_DUR_MILLIS%7D%7D&rating=PG&sid=ce5e4338-c3f4-4605-b92e-45c09fae9817&title=PBBCollab30AllAccessLivestream&ua=Mozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_15_7%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F150.0.0.0%20Safari%2F537.36&url=https%3A%2F%2Fwww.iwanttfc.com%2Fcontent%2F09f9149f-acaa-42ca-a18f-5e2735f5de6a&us_privacy=1---",
+            mpdUrl: "https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd",
         },
         2: {
             id: 2,
@@ -1044,6 +1044,11 @@
         if (document.body) document.body.setAttribute("data-theme", theme);
         const icon = document.querySelector("#theme-toggle i");
         if (icon) icon.className = theme === "light" ? "fas fa-moon" : "fas fa-sun";
+        const btn = document.getElementById("theme-toggle");
+        if (btn) {
+            btn.setAttribute("aria-label", theme === "light" ? "Switch to dark mode" : "Switch to light mode");
+            btn.setAttribute("title", theme === "light" ? "Dark mode" : "Light mode");
+        }
     }
 
     function initThemeToggle() {
