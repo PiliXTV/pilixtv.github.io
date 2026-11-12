@@ -557,6 +557,16 @@ body.pseudo-fs-active .bottom-nav { display: none !important; }
     height: auto;
     object-fit: contain;
     filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.45));
+    animation: logoFloat 3.2s ease-in-out infinite;
+}
+@keyframes logoFloat {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-4px);
+    }
 }
 .mv-label .dot { width: 7px; height: 7px; border-radius: 50%; background: #52525b; }
 .mv-label .dot.live { background: #22c55e; }
