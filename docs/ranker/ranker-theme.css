@@ -160,9 +160,19 @@
 
 body[data-app-tab="ranker"] .bottom-nav,
 body[data-app-tab="ranker"] #header-viewer-badge,
-body[data-app-tab="ranker"] #stream-settings-toggle,
 body[data-app-tab="ranker"] #tutorial-toggle {
   display: none !important;
+}
+
+#panel-ranker #banner-image.banner-image--pixel {
+  width: min(220px, 56vw);
+  height: auto;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 6px;
+  border: 1px solid var(--panel-border);
 }
 
 body[data-app-tab="livestream"] #visitor-badge {

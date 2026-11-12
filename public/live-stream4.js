@@ -1044,6 +1044,11 @@
         if (document.body) document.body.setAttribute("data-theme", theme);
         const icon = document.querySelector("#theme-toggle i");
         if (icon) icon.className = theme === "light" ? "fas fa-moon" : "fas fa-sun";
+        const btn = document.getElementById("theme-toggle");
+        if (btn) {
+            btn.setAttribute("aria-label", theme === "light" ? "Switch to dark mode" : "Switch to light mode");
+            btn.setAttribute("title", theme === "light" ? "Dark mode" : "Light mode");
+        }
     }
 
     function initThemeToggle() {
