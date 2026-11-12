@@ -40,6 +40,12 @@
       if (next !== 'ranker') url.searchParams.delete('r')
       history.replaceState(null, '', url.pathname + url.search + (next === 'ranker' ? '' : ''))
     }
+
+    try {
+      window.dispatchEvent(
+        new CustomEvent('pilix:tabchange', { detail: { tab: next } })
+      )
+    } catch (e) {}
   }
 
   buttons.forEach(function (btn) {

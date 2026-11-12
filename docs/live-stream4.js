@@ -1174,24 +1174,52 @@
         }
     }
 
+    let playerStreamsStarted = false;
+    let storageHookBound = false;
+
+    function stopPlayerStreams() {
+        destroyWall();
+        playerMuted = true;
+        currentServer = null;
+        lastServerButtonsSig = "";
+        playerStreamsStarted = false;
+        const container = document.getElementById("player-container");
+        if (container) {
+            container.classList.remove("mv-idle");
+            container.innerHTML = "";
+        }
+        const wrap = document.getElementById("server-selector");
+        if (wrap) {
+            wrap.style.display = "none";
+            wrap.innerHTML = "";
+            wrap.dataset.bound = "0";
+        }
+    }
+
     function initPlayerStreams() {
         document.body.classList.remove("locked");
         const lock = document.getElementById("lock-screen");
         if (lock) lock.remove();
 
+        playerMuted = false;
+        playerStreamsStarted = true;
         renderServerButtons();
         selectServer(1, false);
 
-        window.addEventListener("storage", (e) => {
-            if (e && e.key === CUSTOM_SERVERS_STORAGE_KEY) {
-                cameraCryptoKeyCache.clear();
-                if (currentServer === "all") {
-                    startWall("grid");
-                } else {
-                    startWall("single", currentServer || 1);
+        if (!storageHookBound) {
+            storageHookBound = true;
+            window.addEventListener("storage", (e) => {
+                if (!playerStreamsStarted) return;
+                if (e && e.key === CUSTOM_SERVERS_STORAGE_KEY) {
+                    cameraCryptoKeyCache.clear();
+                    if (currentServer === "all") {
+                        startWall("grid");
+                    } else {
+                        startWall("single", currentServer || 1);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     /* ============================================================
@@ -3085,8 +3113,23 @@
         if (bootViewerApp._ran) return;
         bootViewerApp._ran = true;
         initThemeToggle();
-        initPlayerStreams();
-        initTutorialGuide();
+        // Streams stay stopped until livestream-invite.js unlocks the player.
+        stopPlayerStreams();
+        window.zvPlayerGate = {
+            start() {
+                if (document.body.dataset.liveUnlocked !== "1") return;
+                initPlayerStreams();
+            },
+            stop() {
+                try {
+                    closeTutorialGuide(false);
+                } catch (e) {}
+                stopPlayerStreams();
+            },
+            startTutorial() {
+                initTutorialGuide();
+            },
+        };
     }
 
     if (document.readyState === "loading") {

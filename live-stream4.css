@@ -1158,3 +1158,42 @@ body.pseudo-fs-active .bottom-nav { display: none !important; }
     border-radius: 12px;
   }
 }
+
+/* ===== Livestream invitation gate ===== */
+.invite-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  background: rgba(5, 5, 8, 0.94);
+}
+.invite-card {
+  max-width: 420px;
+}
+.invite-error {
+  margin: -4px 0 12px;
+  color: #f87171;
+  font-size: 13px;
+  font-weight: 600;
+}
+.invite-error[hidden] {
+  display: none;
+}
+body.live-locked #player-container,
+body.live-locked #server-selector {
+  filter: none;
+}
+body.live-locked #player-container {
+  min-height: min(52vh, 420px);
+  background: #09090b;
+  border-radius: 12px;
+}
+body.live-locked #server-selector {
+  opacity: 0.35;
+  pointer-events: none;
+}
+body.invite-open {
+  overflow: hidden;
+}
+body.live-locked #panel-livestream .viewer-telemetry-row {
+  opacity: 0.55;
+}
