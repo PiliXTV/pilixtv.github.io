@@ -788,6 +788,7 @@ body.pseudo-fs-active .bottom-nav { display: none !important; }
 .zv-tut-overlay {
     position: fixed;
     inset: 0;
+    /* Keep below nominated housemates float (z-index 4500) */
     z-index: 3200;
     pointer-events: auto;
     overflow: hidden;

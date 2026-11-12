@@ -721,7 +721,8 @@ body.nominated-float-open {
 .nominated-float {
   position: fixed;
   inset: 0;
-  z-index: 1100;
+  /* Above livestream tutorial coach-marks (zv-tut-* uses ~3200) */
+  z-index: 4500;
   display: flex;
   align-items: center;
   justify-content: center;
