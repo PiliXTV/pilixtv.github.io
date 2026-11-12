@@ -14,7 +14,29 @@
   var bootTimer = null;
 
   function currentTab() {
-    return document.body.getAttribute("data-app-tab") === "ranker" ? "ranker" : "livestream";
+    // Prefer the URL (e.g. ?tab=ranker) so Ranker links never get the invite prompt.
+    try {
+      var params = new URLSearchParams(window.location.search || "");
+      if (params.get("r")) return "ranker";
+      var q = String(params.get("tab") || "").toLowerCase();
+      if (q === "ranker" || q === "livestream") return q;
+      var hash = String(window.location.hash || "")
+        .replace(/^#/, "")
+        .toLowerCase();
+      if (hash === "ranker" || hash.indexOf("ranker") === 0) return "ranker";
+      if (hash === "livestream") return "livestream";
+    } catch (err) {}
+
+    if (document.body.getAttribute("data-app-tab") === "ranker") return "ranker";
+
+    var rankerPanel = document.getElementById("panel-ranker");
+    if (rankerPanel && !rankerPanel.hidden) return "ranker";
+
+    return "livestream";
+  }
+
+  function isLivestreamTab() {
+    return currentTab() === "livestream";
   }
 
   function expectedInviteCode() {
@@ -48,7 +70,7 @@
   }
 
   function showModal() {
-    if (currentTab() !== "livestream" || unlocked) return;
+    if (!isLivestreamTab() || unlocked) return;
     if (nominatedFloatVisible()) return;
     modal.hidden = false;
     document.body.classList.add("invite-open");
@@ -81,6 +103,7 @@
   }
 
   function unlockPlayer() {
+    if (!isLivestreamTab()) return;
     unlocked = true;
     document.body.classList.remove("live-locked");
     document.body.dataset.liveUnlocked = "1";
@@ -98,11 +121,10 @@
   }
 
   function syncInviteUi() {
-    if (currentTab() === "ranker") {
+    if (!isLivestreamTab()) {
       hideModal();
       return;
     }
-    // Livestream tab
     if (unlocked) {
       hideModal();
       return;
@@ -120,7 +142,10 @@
       event.preventDefault();
       event.stopPropagation();
     }
-    if (currentTab() !== "livestream") return;
+    if (!isLivestreamTab()) {
+      hideModal();
+      return;
+    }
 
     var typed = normalizeInvite(input.value);
     var expected = expectedInviteCode();
@@ -149,7 +174,11 @@
 
   window.addEventListener("pilix:tabchange", function (e) {
     var tab = e && e.detail && e.detail.tab ? e.detail.tab : currentTab();
-    if (tab === "ranker") {
+    if (bootTimer) {
+      clearTimeout(bootTimer);
+      bootTimer = null;
+    }
+    if (tab === "ranker" || !isLivestreamTab()) {
       lockPlayer();
       hideModal();
       return;
@@ -161,15 +190,24 @@
   });
 
   window.addEventListener("pilix:nominatedfloatopen", function () {
-    if (!unlocked) hideModal();
+    hideModal();
   });
 
   window.addEventListener("pilix:nominatedfloatclose", function () {
+    // Ranker visits must never see the invite after closing the float.
+    if (!isLivestreamTab()) {
+      hideModal();
+      return;
+    }
     syncInviteUi();
   });
 
   function bootGate() {
-    if (currentTab() === "ranker") {
+    if (bootTimer) {
+      clearTimeout(bootTimer);
+      bootTimer = null;
+    }
+    if (!isLivestreamTab()) {
       lockPlayer();
       hideModal();
       return;
@@ -177,8 +215,12 @@
     lockPlayer();
     hideModal();
     // Wait for nominated float (async CSV) before prompting.
-    if (bootTimer) clearTimeout(bootTimer);
     bootTimer = setTimeout(function () {
+      bootTimer = null;
+      if (!isLivestreamTab()) {
+        hideModal();
+        return;
+      }
       syncInviteUi();
     }, 1200);
   }
