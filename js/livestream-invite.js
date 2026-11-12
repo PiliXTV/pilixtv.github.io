@@ -11,17 +11,24 @@
 
   var unlocked = false;
   var tutorialStarted = false;
+  var bootTimer = null;
 
   function currentTab() {
     return document.body.getAttribute("data-app-tab") === "ranker" ? "ranker" : "livestream";
   }
 
-  function encodeInvite(value) {
+  function expectedInviteCode() {
     try {
-      return btoa(unescape(encodeURIComponent(String(value || "").trim())));
+      return atob(INVITE_B64);
     } catch (err) {
       return "";
     }
+  }
+
+  function normalizeInvite(value) {
+    return String(value || "")
+      .replace(/[\u200B-\u200D\uFEFF]/g, "")
+      .trim();
   }
 
   function setError(message) {
@@ -35,7 +42,14 @@
     errorEl.textContent = message;
   }
 
+  function nominatedFloatVisible() {
+    var floatEl = document.getElementById("nominated-float");
+    return Boolean(floatEl && !floatEl.hidden);
+  }
+
   function showModal() {
+    if (currentTab() !== "livestream" || unlocked) return;
+    if (nominatedFloatVisible()) return;
     modal.hidden = false;
     document.body.classList.add("invite-open");
     setError("");
@@ -43,8 +57,9 @@
     setTimeout(function () {
       try {
         input.focus();
+        input.select();
       } catch (e) {}
-    }, 30);
+    }, 40);
   }
 
   function hideModal() {
@@ -82,24 +97,39 @@
     }
   }
 
-  function applyTab(tab) {
-    if (tab === "ranker") {
-      lockPlayer();
+  function syncInviteUi() {
+    if (currentTab() === "ranker") {
       hideModal();
       return;
     }
-    // Livestream tab: always require a fresh code after leaving Ranker / on entry.
-    if (!unlocked) {
-      lockPlayer();
-      showModal();
+    // Livestream tab
+    if (unlocked) {
+      hideModal();
+      return;
     }
+    lockPlayer();
+    if (nominatedFloatVisible()) {
+      hideModal();
+      return;
+    }
+    showModal();
   }
 
-  function tryUnlock() {
-    var encoded = encodeInvite(input.value);
-    if (!encoded || encoded !== INVITE_B64) {
+  function tryUnlock(event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    if (currentTab() !== "livestream") return;
+
+    var typed = normalizeInvite(input.value);
+    var expected = expectedInviteCode();
+    if (!expected || typed !== expected) {
       setError("Incorrect invitation code.");
-      input.select();
+      try {
+        input.focus();
+        input.select();
+      } catch (e) {}
       return;
     }
     unlockPlayer();
@@ -107,13 +137,9 @@
 
   submit.addEventListener("click", tryUnlock);
   input.addEventListener("keydown", function (e) {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      tryUnlock();
-    }
+    if (e.key === "Enter") tryUnlock(e);
   });
 
-  // Block backdrop dismiss — invitation is required.
   modal.addEventListener("click", function (e) {
     if (e.target === modal) {
       e.preventDefault();
@@ -123,17 +149,38 @@
 
   window.addEventListener("pilix:tabchange", function (e) {
     var tab = e && e.detail && e.detail.tab ? e.detail.tab : currentTab();
-    // Switching to livestream always re-locks (even if previously unlocked this page load).
-    if (tab === "livestream") {
-      unlocked = false;
+    if (tab === "ranker") {
+      lockPlayer();
+      hideModal();
+      return;
     }
-    applyTab(tab);
+    // Back on livestream: require invitation again.
+    unlocked = false;
+    lockPlayer();
+    syncInviteUi();
   });
 
-  // Initial state after tabs script sets data-app-tab.
+  window.addEventListener("pilix:nominatedfloatopen", function () {
+    if (!unlocked) hideModal();
+  });
+
+  window.addEventListener("pilix:nominatedfloatclose", function () {
+    syncInviteUi();
+  });
+
   function bootGate() {
+    if (currentTab() === "ranker") {
+      lockPlayer();
+      hideModal();
+      return;
+    }
     lockPlayer();
-    applyTab(currentTab());
+    hideModal();
+    // Wait for nominated float (async CSV) before prompting.
+    if (bootTimer) clearTimeout(bootTimer);
+    bootTimer = setTimeout(function () {
+      syncInviteUi();
+    }, 1200);
   }
 
   if (document.readyState === "loading") {

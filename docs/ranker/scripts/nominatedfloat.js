@@ -76,6 +76,9 @@ function openNominatedFloat() {
 
   var closeBtn = document.getElementById("nominated-float-close");
   if (closeBtn) closeBtn.focus();
+  try {
+    window.dispatchEvent(new CustomEvent("pilix:nominatedfloatopen"));
+  } catch (err) {}
 }
 
 function closeNominatedFloat() {
@@ -84,6 +87,9 @@ function closeNominatedFloat() {
   modal.hidden = true;
   modal.setAttribute("aria-hidden", "true");
   document.body.classList.remove("nominated-float-open");
+  try {
+    window.dispatchEvent(new CustomEvent("pilix:nominatedfloatclose"));
+  } catch (err) {}
 }
 
 async function maybeShowNominatedFloat() {
