@@ -290,6 +290,39 @@
       You’re the <span class="visitor-number">#<span id="visitor-count">0</span></span> visitor.
     </div>
 
+    <div id="livestream-invite-modal" class="zv-error-overlay invite-overlay" hidden>
+      <div
+        class="zv-error-card invite-card"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="livestream-invite-title"
+      >
+        <div class="zv-error-top">
+          <div class="zv-error-status is-warning">
+            <i class="fas fa-key" aria-hidden="true"></i>
+            <span>Invitation required</span>
+          </div>
+        </div>
+        <h2 class="zv-error-title" id="livestream-invite-title">Enter Invitation Code:</h2>
+        <p class="zv-error-desc">
+          Enter the invitation code to watch the PBB Collab 3.0 livestream. Leaving for Ranker locks the player again.
+        </p>
+        <label class="settings-label" for="livestream-invite-input">Invitation code</label>
+        <input
+          id="livestream-invite-input"
+          class="settings-input"
+          type="password"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="Invitation code"
+        />
+        <p class="invite-error" id="livestream-invite-error" hidden aria-live="polite"></p>
+        <div class="zv-error-actions">
+          <button type="button" class="zv-retry-btn" id="livestream-invite-submit">Unlock livestream</button>
+        </div>
+      </div>
+    </div>
+
     <div id="stream-settings-modal" class="zv-error-overlay" hidden>
       <div class="zv-error-card settings-card" role="dialog" aria-modal="true" aria-labelledby="stream-settings-title">
         <div class="zv-error-top">
@@ -365,6 +398,7 @@
     <script src="https://cdn.jsdelivr.net/npm/mqtt@5.16.1/dist/mqtt.min.js"></script>
     <script src="/js/viewer-presence.js"></script>
     <script src="/live-stream4.js"></script>
+    <script src="/js/livestream-invite.js"></script>
     <script src="/js/stream-settings.js"></script>
     <script src="/ranker/scripts/csv.js"></script>
     <script src="/ranker/scripts/dragdrop.js"></script>

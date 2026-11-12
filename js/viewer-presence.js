@@ -185,19 +185,45 @@
     });
   }
 
+  var presencePaused = true;
+
+  function pausePresence() {
+    presencePaused = true;
+    if (heartbeatTimer) {
+      clearInterval(heartbeatTimer);
+      heartbeatTimer = null;
+    }
+    publishPresence(true);
+  }
+
+  function resumePresence(cam) {
+    presencePaused = false;
+    if (cam != null) currentCam = normalizeCam(cam);
+    publishPresence(false);
+    startHeartbeat();
+  }
+
   window.zvAnalytics = {
-    trackCamera: setCamera,
+    trackCamera: function (cam) {
+      if (presencePaused) {
+        currentCam = normalizeCam(cam);
+        return;
+      }
+      setCamera(cam);
+    },
+    pausePresence: pausePresence,
+    resumePresence: resumePresence,
   };
 
   window.addEventListener("pagehide", function () {
     publishPresence(true);
   });
   document.addEventListener("visibilitychange", function () {
+    if (presencePaused) return;
     if (document.visibilityState === "visible") publishPresence(false);
   });
 
-  // Optimistic local count before the broker connects.
-  peers[myId] = { cam: currentCam, ts: Date.now() };
-  recount();
+  // Stay out of the live count until the invitation gate unlocks playback.
   connect();
+  pausePresence();
 })();
