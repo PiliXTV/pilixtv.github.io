@@ -1036,26 +1036,71 @@ body.pseudo-fs-active .bottom-nav { display: none !important; }
 }
 
 /* ===== PiliX stream settings ===== */
+.settings-card {
+  max-width: 520px;
+}
 .settings-label {
   display: block;
   font-size: 12px;
   font-weight: 600;
   color: #a1a1aa;
-  margin-bottom: 8px;
+  margin: 0 0 6px;
 }
-.settings-json {
+.settings-input {
   width: 100%;
-  min-height: 180px;
-  margin-bottom: 16px;
-  padding: 12px 14px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
   border-radius: 8px;
   border: 1px solid #27272a;
   background: #09090b;
   color: #fafafa;
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
-  line-height: 1.5;
-  resize: vertical;
+  line-height: 1.4;
+}
+.settings-input:focus {
+  border-color: #52525b;
+}
+.settings-cam-tabs {
+  display: flex;
+  gap: 6px;
+  margin: 0 0 10px;
+}
+.settings-cam-tab {
+  flex: 1 1 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 8px;
+  border-radius: 999px;
+  border: 1px solid #27272a;
+  background: #09090b;
+  color: #a1a1aa;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+.settings-cam-tab:hover {
+  color: #fff;
+  background: #18181b;
+}
+.settings-cam-tab.is-active {
+  background: #ffffff;
+  color: #09090b;
+  border-color: transparent;
+}
+.settings-cam-status {
+  margin: 0 0 12px;
+  font-size: 12px;
+  color: #a1a1aa;
+  min-height: 1.2em;
+}
+.settings-actions {
+  margin-top: 4px;
+  gap: 10px;
 }
 .settings-clear {
   border: none;
@@ -1068,3 +1113,12 @@ body.pseudo-fs-active .bottom-nav { display: none !important; }
 }
 .settings-clear:hover { color: #ffffff; }
 #stream-settings-modal[hidden] { display: none !important; }
+
+@media (max-width: 520px) {
+  .settings-cam-tabs {
+    flex-direction: column;
+  }
+  .settings-cam-tab {
+    border-radius: 12px;
+  }
+}

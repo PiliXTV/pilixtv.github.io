@@ -292,32 +292,70 @@
     </div>
 
     <div id="stream-settings-modal" class="zv-error-overlay" hidden>
-      <div class="zv-error-card" role="dialog" aria-modal="true" aria-labelledby="stream-settings-title">
+      <div class="zv-error-card settings-card" role="dialog" aria-modal="true" aria-labelledby="stream-settings-title">
         <div class="zv-error-top">
           <div class="zv-error-status is-warning">
             <i class="fas fa-gear"></i>
-            <span>Stream settings</span>
+            <span>Camera DASH settings</span>
           </div>
           <button type="button" class="icon-btn" id="stream-settings-close" aria-label="Close settings">
             <i class="fas fa-xmark"></i>
           </button>
         </div>
-        <h2 class="zv-error-title" id="stream-settings-title">Camera DASH feeds</h2>
+        <h2 class="zv-error-title" id="stream-settings-title">Override a camera feed</h2>
         <p class="zv-error-desc">
-          Paste ClearKey DASH <code>mpdUrl</code> / <code>keyId</code> / <code>key</code> per
-          camera. Saved only in this browser. Official PBB All Access stays on iWantTFC.
+          Pick Main, Dining, or External, then paste that camera’s DASH details.
+          Saved only in this browser — not in the site code.
         </p>
-        <label class="settings-label" for="stream-settings-json">JSON config</label>
-        <textarea
-          id="stream-settings-json"
-          class="settings-json"
-          rows="10"
+
+        <div class="settings-cam-tabs" role="tablist" aria-label="Camera to override">
+          <button type="button" class="settings-cam-tab is-active" data-cam="1" role="tab" aria-selected="true">
+            <i class="fas fa-tv" aria-hidden="true"></i> Main
+          </button>
+          <button type="button" class="settings-cam-tab" data-cam="2" role="tab" aria-selected="false">
+            <i class="fas fa-utensils" aria-hidden="true"></i> Dining
+          </button>
+          <button type="button" class="settings-cam-tab" data-cam="3" role="tab" aria-selected="false">
+            <i class="fas fa-door-open" aria-hidden="true"></i> External
+          </button>
+        </div>
+
+        <p class="settings-cam-status" id="stream-settings-status" aria-live="polite"></p>
+
+        <label class="settings-label" for="stream-settings-mpd">mpdUrl</label>
+        <input
+          id="stream-settings-mpd"
+          class="settings-input"
+          type="url"
           spellcheck="false"
-          placeholder='{"1":{"mpdUrl":"https://…/manifest.mpd","keyId":"…","key":"…"}}'
-        ></textarea>
-        <div class="zv-error-actions">
-          <button type="button" class="zv-retry-btn" id="stream-settings-save">Save &amp; reload</button>
-          <button type="button" class="settings-clear" id="stream-settings-clear">Clear overrides</button>
+          autocomplete="off"
+          placeholder="https://…/manifest.mpd"
+        />
+
+        <label class="settings-label" for="stream-settings-keyid">keyId</label>
+        <input
+          id="stream-settings-keyid"
+          class="settings-input"
+          type="text"
+          spellcheck="false"
+          autocomplete="off"
+          placeholder="32-character hex (optional for unencrypted)"
+        />
+
+        <label class="settings-label" for="stream-settings-key">key</label>
+        <input
+          id="stream-settings-key"
+          class="settings-input"
+          type="text"
+          spellcheck="false"
+          autocomplete="off"
+          placeholder="32-character hex (optional for unencrypted)"
+        />
+
+        <div class="zv-error-actions settings-actions">
+          <button type="button" class="zv-retry-btn" id="stream-settings-save">Save camera &amp; reload</button>
+          <button type="button" class="settings-clear" id="stream-settings-clear-cam">Clear this camera</button>
+          <button type="button" class="settings-clear" id="stream-settings-clear">Clear all</button>
         </div>
       </div>
     </div>
