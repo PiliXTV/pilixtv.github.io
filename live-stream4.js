@@ -74,7 +74,7 @@
             name: "Main Stream",
             short: "Main",
             icon: "fa-tv",
-            mpdUrl: "https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd",
+            mpdUrl: "https://absp-live.akamaized.net/dash/live/2099522/pbbcollab30allaccesslivestream/manifest.mpd",
         },
         2: {
             id: 2,
