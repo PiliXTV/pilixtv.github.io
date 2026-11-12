@@ -41,7 +41,7 @@
           <div
             class="live-viewer-badge"
             id="header-viewer-badge"
-            title="Viewers on this device session"
+            title="Live viewers watching right now"
             aria-live="polite"
           >
             <span class="live-viewer-dot"></span>
@@ -123,7 +123,7 @@
             <div
               class="viewer-telemetry-row"
               id="viewer-telemetry-row"
-              aria-label="Viewer breakdown"
+              aria-label="Live viewer breakdown"
             >
               <div class="vt-pill vt-total">
                 <span class="live-viewer-dot"></span>
@@ -362,6 +362,8 @@
     <div id="root" hidden></div>
     <script type="module" src="/src/main.tsx"></script>
     <script src="/js/app-tabs.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mqtt@5.16.1/dist/mqtt.min.js"></script>
+    <script src="/js/viewer-presence.js"></script>
     <script src="/live-stream4.js"></script>
     <script src="/js/stream-settings.js"></script>
     <script src="/ranker/scripts/csv.js"></script>
