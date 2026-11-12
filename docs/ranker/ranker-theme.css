@@ -166,14 +166,15 @@ body[data-app-tab="ranker"] #tutorial-toggle {
 }
 
 #panel-ranker #banner-image.banner-image--official {
-  width: min(340px, 78vw);
+  width: min(360px, 82vw);
   height: auto;
   image-rendering: auto;
-  border-radius: 12px;
-  background: #ffffff;
-  padding: 10px 14px;
-  border: 1px solid var(--panel-border);
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  border: none;
   object-fit: contain;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.45));
 }
 
 body[data-app-tab="livestream"] #visitor-badge {
