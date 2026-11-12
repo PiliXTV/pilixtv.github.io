@@ -537,6 +537,9 @@ body.pseudo-fs-active .bottom-nav { display: none !important; }
     font-size: 12px; font-weight: 600; pointer-events: none;
     transition: opacity 0.3s ease;
 }
+.mv-filler-hint {
+    transition: opacity 0.3s ease;
+}
 .mv-filler-logo {
     position: absolute;
     inset: 0;
@@ -546,6 +549,7 @@ body.pseudo-fs-active .bottom-nav { display: none !important; }
     justify-content: center;
     padding: clamp(16px, 8%, 36px);
     pointer-events: none;
+    opacity: 0;
     transition: opacity 0.3s ease;
 }
 .mv-filler-logo img {
@@ -796,8 +800,9 @@ body.pseudo-fs-active .bottom-nav { display: none !important; }
 /* auto-hide controls after 3s idle */
 #player-container.mv-idle .mv-audio,
 #player-container.mv-idle .mv-label,
-#player-container.mv-idle .mv-filler-logo,
+#player-container.mv-idle .mv-filler-hint,
 #player-container.mv-idle .wall-controls { opacity: 0; }
+#player-container.mv-idle .mv-filler-logo { opacity: 1; }
 #player-container.mv-idle .mv-audio,
 #player-container.mv-idle .wc-group { pointer-events: none; }
 #player-container.mv-idle, #player-container.mv-idle .wall-tile { cursor: none; }
