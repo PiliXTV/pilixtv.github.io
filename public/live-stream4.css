@@ -1035,5 +1035,36 @@ body.pseudo-fs-active .bottom-nav { display: none !important; }
     }
 }
 
-
-
+/* ===== PiliX stream settings ===== */
+.settings-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #a1a1aa;
+  margin-bottom: 8px;
+}
+.settings-json {
+  width: 100%;
+  min-height: 180px;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #27272a;
+  background: #09090b;
+  color: #fafafa;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  resize: vertical;
+}
+.settings-clear {
+  border: none;
+  background: transparent;
+  color: #a1a1aa;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.settings-clear:hover { color: #ffffff; }
+#stream-settings-modal[hidden] { display: none !important; }

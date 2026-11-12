@@ -160,6 +160,7 @@
 
 body[data-app-tab="ranker"] .bottom-nav,
 body[data-app-tab="ranker"] #header-viewer-badge,
+body[data-app-tab="ranker"] #stream-settings-toggle,
 body[data-app-tab="ranker"] #tutorial-toggle {
   display: none !important;
 }
