@@ -13,15 +13,17 @@
   background: var(--card-bg);
   color: var(--text-muted);
   border-radius: 999px;
-  padding: 10px 14px;
+  padding: 10px 12px;
   font-family: "Outfit", sans-serif;
-  font-size: clamp(12px, 2.8vw, 14px);
+  font-size: clamp(11px, 2.2vw, 14px);
   font-weight: 700;
+  line-height: 1.2;
   cursor: pointer;
   transition: 0.2s ease;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: center;
 }
 
 .app-tab:hover {
@@ -42,12 +44,14 @@
 
 @media (max-width: 560px) {
   .app-tabs {
-    flex-direction: column;
+    gap: 6px;
+    padding: 10px 10px 0;
   }
   .app-tab {
-    white-space: normal;
-    border-radius: 14px;
-    text-align: center;
-    line-height: 1.25;
+    /* Keep labels on a single line on mobile too */
+    white-space: nowrap;
+    border-radius: 999px;
+    padding: 10px 8px;
+    font-size: clamp(10px, 2.8vw, 12px);
   }
 }
