@@ -1,4 +1,4 @@
-/* Livestream invitation gate — unlock is in-memory only for the current live visit. */
+/* Livestream invitation gate — unlock lasts for the current livestream visit. */
 (function () {
   // Base64 of the invitation code (do not store plaintext).
   var INVITE_B64 = "QHBpbGlfcGluYXM=";
@@ -12,9 +12,9 @@
   var unlocked = false;
   var tutorialStarted = false;
   var bootTimer = null;
+  var leftForRanker = false;
 
   function currentTab() {
-    // Prefer the URL (e.g. ?tab=ranker) so Ranker links never get the invite prompt.
     try {
       var params = new URLSearchParams(window.location.search || "");
       if (params.get("r")) return "ranker";
@@ -76,15 +76,12 @@
     modal.style.display = "flex";
     document.body.classList.add("invite-open");
     setError("");
-    // Only clear when first opening, so a late sync doesn't wipe typed input.
     if (document.activeElement !== input) {
       input.value = "";
     }
     setTimeout(function () {
       try {
-        if (!unlocked && !modal.hidden) {
-          input.focus();
-        }
+        if (!unlocked && !modal.hidden) input.focus();
       } catch (e) {}
     }, 40);
   }
@@ -119,6 +116,7 @@
     if (!isLivestreamTab()) return;
     clearBootTimer();
     unlocked = true;
+    leftForRanker = false;
     document.body.classList.remove("live-locked");
     document.body.dataset.liveUnlocked = "1";
     hideModal();
@@ -196,15 +194,29 @@
 
   window.addEventListener("pilix:tabchange", function (e) {
     var tab = e && e.detail && e.detail.tab ? e.detail.tab : currentTab();
+    var prev = e && e.detail ? e.detail.prev : null;
     clearBootTimer();
-    if (tab === "ranker" || !isLivestreamTab()) {
+
+    if (tab === "ranker") {
+      leftForRanker = true;
       lockPlayer();
       hideModal();
       return;
     }
-    // Back on livestream: require invitation again.
-    unlocked = false;
-    lockPlayer();
+
+    // Livestream: only re-prompt when returning from Ranker (or first entry while locked).
+    if (prev === "ranker" || leftForRanker) {
+      leftForRanker = false;
+      unlocked = false;
+      lockPlayer();
+      syncInviteUi();
+      return;
+    }
+
+    if (unlocked) {
+      hideModal();
+      return;
+    }
     syncInviteUi();
   });
 
@@ -215,6 +227,10 @@
   window.addEventListener("pilix:nominatedfloatclose", function () {
     clearBootTimer();
     if (!isLivestreamTab()) {
+      hideModal();
+      return;
+    }
+    if (unlocked) {
       hideModal();
       return;
     }
@@ -230,7 +246,6 @@
     }
     lockPlayer();
     hideModal();
-    // Wait for nominated float (async CSV) before prompting.
     bootTimer = setTimeout(function () {
       bootTimer = null;
       if (!isLivestreamTab() || unlocked) {
