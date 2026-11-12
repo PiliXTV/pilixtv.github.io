@@ -1830,9 +1830,11 @@
         if (mode === "grid" && ids.length % 2 === 1) {
             const filler = document.createElement("div");
             filler.className = "wall-tile mv-filler";
-            filler.innerHTML = `<div class="mv-filler-logo" aria-hidden="true">
-                <img src="/ranker/assets/logo_pbb_collab.png" alt="" />
-            </div>`;
+            filler.innerHTML = `
+                <div class="mv-msg mv-filler-hint"><i class="fas fa-hand-pointer"></i>&nbsp; Tap a camera to expand</div>
+                <div class="mv-filler-logo" aria-hidden="true">
+                    <img src="/ranker/assets/logo_pbb_collab.png" alt="" />
+                </div>`;
             grid.appendChild(filler);
         }
 
