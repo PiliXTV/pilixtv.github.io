@@ -81,14 +81,16 @@
         2: {
             id: 2,
             name: "Dining Area",
-            short: "Dining",
+            short: "Dining Area",
             icon: "fa-utensils",
             mpdUrl: "https://absp-live.akamaized.net/dash/live/2099522/pbbcollab30allaccesslivestream-diningarea/manifest.mpd",
             keyId: "ea6588d030c94ca89925ac0c49974430",
             key: "3e6de4afee1eff8e14f9506b76ac9ee6",
         },
+        3: {
+            id: 3,
             name: "External Den",
-            short: "External",
+            short: "External Den",
             icon: "fa-door-open",
             mpdUrl: "https://absp-live.akamaized.net/dash/live/2099522/pbbcollab30allaccesslivestream-externalden/manifest.mpd",
             keyId: "b750a40736a24e60b5a4f256208b92c5",
