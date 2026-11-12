@@ -535,6 +535,24 @@ body.pseudo-fs-active .bottom-nav { display: none !important; }
     padding: 4px 10px; border-radius: 999px;
     background: rgba(0,0,0,0.6); color: #fff;
     font-size: 12px; font-weight: 600; pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+.mv-filler-logo {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(16px, 8%, 36px);
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+.mv-filler-logo img {
+    width: min(72%, 280px);
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.45));
 }
 .mv-label .dot { width: 7px; height: 7px; border-radius: 50%; background: #52525b; }
 .mv-label .dot.live { background: #22c55e; }
@@ -777,6 +795,8 @@ body.pseudo-fs-active .bottom-nav { display: none !important; }
 
 /* auto-hide controls after 3s idle */
 #player-container.mv-idle .mv-audio,
+#player-container.mv-idle .mv-label,
+#player-container.mv-idle .mv-filler-logo,
 #player-container.mv-idle .wall-controls { opacity: 0; }
 #player-container.mv-idle .mv-audio,
 #player-container.mv-idle .wc-group { pointer-events: none; }
