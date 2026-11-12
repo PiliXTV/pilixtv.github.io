@@ -3117,7 +3117,7 @@
         stopPlayerStreams();
         window.zvPlayerGate = {
             start() {
-                if (document.body.dataset.liveUnlocked !== "1") return;
+                document.body.dataset.liveUnlocked = "1";
                 initPlayerStreams();
             },
             stop() {

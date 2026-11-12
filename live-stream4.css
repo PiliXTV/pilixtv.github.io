@@ -1163,8 +1163,13 @@ body.pseudo-fs-active .bottom-nav { display: none !important; }
 .invite-overlay {
   position: fixed;
   inset: 0;
-  z-index: 5000;
+  /* Below nominated housemates float (z-index 4500) so that modal shows first */
+  z-index: 4400;
   background: rgba(5, 5, 8, 0.94);
+}
+body.nominated-float-open .invite-overlay {
+  visibility: hidden;
+  pointer-events: none;
 }
 .invite-card {
   max-width: 420px;
