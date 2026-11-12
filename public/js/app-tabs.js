@@ -2,7 +2,10 @@
   var TAB_KEY = 'pilix_app_tab'
   var livestream = document.getElementById('panel-livestream')
   var ranker = document.getElementById('panel-ranker')
-  var buttons = Array.prototype.slice.call(document.querySelectorAll('[data-app-tab]'))
+  // Only real tab buttons — never body[data-app-tab], or every page click retriggers setTab.
+  var buttons = Array.prototype.slice.call(
+    document.querySelectorAll('.app-tab[data-app-tab], [role="tab"][data-app-tab]')
+  )
   if (!livestream || !ranker || !buttons.length) return
 
   function desiredTab() {
@@ -22,6 +25,7 @@
 
   function setTab(tab, pushUrl) {
     var next = tab === 'ranker' ? 'ranker' : 'livestream'
+    var prev = document.body.getAttribute('data-app-tab')
     document.body.setAttribute('data-app-tab', next)
     livestream.hidden = next !== 'livestream'
     ranker.hidden = next !== 'ranker'
@@ -41,9 +45,12 @@
       history.replaceState(null, '', url.pathname + url.search + (next === 'ranker' ? '' : ''))
     }
 
+    // Only notify listeners when the tab actually changes.
+    if (prev === next) return
+
     try {
       window.dispatchEvent(
-        new CustomEvent('pilix:tabchange', { detail: { tab: next } })
+        new CustomEvent('pilix:tabchange', { detail: { tab: next, prev: prev } })
       )
     } catch (e) {}
   }
