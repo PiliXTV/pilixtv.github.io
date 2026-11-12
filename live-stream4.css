@@ -1167,9 +1167,9 @@ body.pseudo-fs-active .bottom-nav { display: none !important; }
   z-index: 4400;
   background: rgba(5, 5, 8, 0.94);
 }
-body.nominated-float-open .invite-overlay {
-  visibility: hidden;
-  pointer-events: none;
+body.nominated-float-open .invite-overlay,
+body[data-app-tab="ranker"] .invite-overlay {
+  display: none !important;
 }
 .invite-card {
   max-width: 420px;
