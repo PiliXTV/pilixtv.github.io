@@ -81,7 +81,9 @@
             name: "Dining Area",
             short: "Dining",
             icon: "fa-utensils",
-            mpdUrl: "https://dash.akamaized.net/envivio/EnvivioDash3/manifest.mpd",
+            mpdUrl: "https://absp-live.akamaized.net/dash/live/2099522/pbbcollab30allaccesslivestream/manifest.mpd",
+            keyId: "ea6588d030c94ca89925ac0c49974430",
+            key: "3e6de4afee1eff8e14f9506b76ac9ee6",
         },
         3: {
             id: 3,
