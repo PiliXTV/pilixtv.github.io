@@ -165,15 +165,15 @@ body[data-app-tab="ranker"] #tutorial-toggle {
   display: none !important;
 }
 
-#panel-ranker #banner-image.banner-image--pixel {
-  width: min(220px, 56vw);
+#panel-ranker #banner-image.banner-image--official {
+  width: min(340px, 78vw);
   height: auto;
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
+  image-rendering: auto;
   border-radius: 12px;
   background: #ffffff;
-  padding: 6px;
+  padding: 10px 14px;
   border: 1px solid var(--panel-border);
+  object-fit: contain;
 }
 
 body[data-app-tab="livestream"] #visitor-badge {
