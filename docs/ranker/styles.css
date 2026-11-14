@@ -422,6 +422,7 @@ body.export-modal-open {
 .evicted .table__entry-img,
 .evicted .ranking__entry-img {
   filter: grayscale(100%);
+  opacity: 0.72;
 }
 
 .table__entry-check {
@@ -497,7 +498,7 @@ body.export-modal-open {
 
 .evicted .table__entry-icon-border,
 .evicted .ranking__entry-icon-border {
-  border: 4px solid var(--no-rank);
+  border: 4px solid #000000;
 }
 
 .ranking__entry-icon-border.dragged-over {

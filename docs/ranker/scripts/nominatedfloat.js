@@ -93,16 +93,10 @@ function closeNominatedFloat() {
 }
 
 async function maybeShowNominatedFloat() {
-  var count = populateNominatedFloat();
-  if (count === 0) return;
-  if (typeof ensureExportFonts === "function") {
-    try {
-      await ensureExportFonts();
-    } catch (err) {
-      // Titles still render with fallback fonts.
-    }
-  }
-  openNominatedFloat();
+  // Nominated housemates float is disabled.
+  try {
+    window.dispatchEvent(new CustomEvent("pilix:nominatedfloatclose"));
+  } catch (err) {}
 }
 
 document.addEventListener("keydown", function (event) {
