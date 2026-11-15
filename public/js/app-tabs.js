@@ -16,11 +16,22 @@
     var hash = (window.location.hash || '').replace(/^#/, '').toLowerCase()
     if (hash === 'ranker' || hash.indexOf('ranker') === 0) return 'ranker'
     if (hash === 'livestream') return 'livestream'
-    try {
-      var saved = localStorage.getItem(TAB_KEY)
-      if (saved === 'ranker' || saved === 'livestream') return saved
-    } catch (e) {}
-    return 'livestream'
+    // Bare site URL (pilixtv.vercel.app / pilixtv.github.io) lands on Ranker.
+    return 'ranker'
+  }
+
+  function syncUrl(next) {
+    var url = new URL(window.location.href)
+    if (next === 'ranker') {
+      // Ranker is the home view — keep root URL (and optional shared ?r=).
+      url.searchParams.delete('tab')
+    } else {
+      url.searchParams.set('tab', 'livestream')
+      url.searchParams.delete('r')
+    }
+    var nextHref = url.pathname + url.search + url.hash
+    var cur = window.location.pathname + window.location.search + window.location.hash
+    if (nextHref !== cur) history.replaceState(null, '', nextHref)
   }
 
   function setTab(tab, pushUrl) {
@@ -38,12 +49,7 @@
       localStorage.setItem(TAB_KEY, next)
     } catch (e) {}
 
-    if (pushUrl) {
-      var url = new URL(window.location.href)
-      url.searchParams.set('tab', next)
-      if (next !== 'ranker') url.searchParams.delete('r')
-      history.replaceState(null, '', url.pathname + url.search + (next === 'ranker' ? '' : ''))
-    }
+    if (pushUrl) syncUrl(next)
 
     // Only notify listeners when the tab actually changes.
     if (prev === next) return
@@ -61,5 +67,8 @@
     })
   })
 
-  setTab(desiredTab(), false)
+  var initial = desiredTab()
+  setTab(initial, false)
+  // Normalize bookmarks like ?tab=ranker → clean root while staying on Ranker.
+  if (initial === 'ranker') syncUrl('ranker')
 })()
