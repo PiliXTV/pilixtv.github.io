@@ -32,7 +32,7 @@
     <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.3.6/dist/shaka-player.compiled.js"></script>
     <script src="/js/theme.js"></script>
   </head>
-  <body data-app-tab="livestream">
+  <body data-app-tab="ranker">
     <header class="site-header">
       <div class="header-inner">
         <div class="brand">
@@ -95,25 +95,25 @@
     <div class="app-tabs" role="tablist" aria-label="PiliX sections">
       <button
         type="button"
-        class="app-tab is-active"
+        class="app-tab"
         role="tab"
         data-app-tab="livestream"
-        aria-selected="true"
+        aria-selected="false"
       >
         PBB collab 3.0 Livestream
       </button>
       <button
         type="button"
-        class="app-tab"
+        class="app-tab is-active"
         role="tab"
         data-app-tab="ranker"
-        aria-selected="false"
+        aria-selected="true"
       >
         PBB collab 3.0 Big 4 Ranker
       </button>
     </div>
 
-    <section id="panel-livestream" role="tabpanel">
+    <section id="panel-livestream" role="tabpanel" hidden>
       <div class="player-layout" id="main-content">
         <div id="player-container"></div>
 
@@ -172,7 +172,7 @@
       </nav>
     </section>
 
-    <section id="panel-ranker" role="tabpanel" hidden>
+    <section id="panel-ranker" role="tabpanel">
       <div id="top-banner">
         <p id="version">v3.0.22</p>
         <img
