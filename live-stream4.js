@@ -75,8 +75,8 @@
             short: "Main",
             icon: "fa-tv",
             mpdUrl: "https://absp-live.akamaized.net/dash/live/2099522/pbbcollab30allaccesslivestream/manifest.mpd",
-            keyId: "8150b74d16324bb4b2ff62e3e202fc7a",
-            key: "0c5ed4f9db9d4ee61bbc91b3a51ef8b5",
+            keyId: "b75e0a8315d0499b834c00a3d5b91935",
+            key: "39876c3c4f32a11dee56078febbb67dd",
         },
         2: {
             id: 2,
