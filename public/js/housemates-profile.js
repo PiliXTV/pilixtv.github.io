@@ -233,7 +233,8 @@
     var nestPhase = outerList.length ? 180 / outerList.length : 0;
 
     renderRing(outerRing, outerList, 0.43, "outer", 0);
-    renderRing(innerRing, innerList, 0.29, "inner", nestPhase);
+    // Tighter radius so inner hexes sit a little closer to each other.
+    renderRing(innerRing, innerList, 0.24, "inner", nestPhase);
   }
 
   function renderDetail(hm) {
