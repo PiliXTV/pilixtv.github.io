@@ -1159,34 +1159,45 @@ body.pseudo-fs-active .bottom-nav { display: none !important; }
   }
 }
 
-/* ===== Livestream invitation gate ===== */
-.invite-overlay {
+/* ===== Livestream offline notice (non-dismissible) ===== */
+.livestream-offline-float {
   position: fixed;
-  inset: 0;
-  /* Below nominated housemates float (z-index 4500) so that modal shows first */
+  left: 50%;
+  bottom: max(5.5rem, calc(env(safe-area-inset-bottom, 0px) + 4.75rem));
+  transform: translateX(-50%);
   z-index: 4400;
-  background: rgba(5, 5, 8, 0.94);
+  width: min(92vw, 420px);
+  pointer-events: none;
 }
-/* .zv-error-overlay sets display:flex — must beat that when [hidden] */
-#livestream-invite-modal[hidden],
-.invite-overlay[hidden] {
+.livestream-offline-float[hidden] {
   display: none !important;
 }
-body.nominated-float-open .invite-overlay,
-body[data-app-tab="ranker"] .invite-overlay {
+body.nominated-float-open .livestream-offline-float,
+body[data-app-tab="ranker"] .livestream-offline-float {
   display: none !important;
 }
-.invite-card {
-  max-width: 420px;
+.livestream-offline-float__card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.95rem 1.1rem;
+  border-radius: 14px;
+  background: rgba(12, 12, 16, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.45);
+  color: #f4f4f5;
 }
-.invite-error {
-  margin: -4px 0 12px;
+.livestream-offline-float__card i {
+  flex: 0 0 auto;
+  font-size: 1.15rem;
   color: #f87171;
-  font-size: 13px;
-  font-weight: 600;
 }
-.invite-error[hidden] {
-  display: none;
+.livestream-offline-float__card p {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 650;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
 }
 body.live-locked #player-container,
 body.live-locked #server-selector {
@@ -1200,9 +1211,6 @@ body.live-locked #player-container {
 body.live-locked #server-selector {
   opacity: 0.35;
   pointer-events: none;
-}
-body.invite-open {
-  overflow: hidden;
 }
 body.live-locked #panel-livestream .viewer-telemetry-row {
   opacity: 0.55;

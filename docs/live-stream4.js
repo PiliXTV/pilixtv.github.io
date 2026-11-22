@@ -3113,7 +3113,7 @@
         if (bootViewerApp._ran) return;
         bootViewerApp._ran = true;
         initThemeToggle();
-        // Streams stay stopped until livestream-invite.js unlocks the player.
+        // Streams stay stopped while livestream-invite.js keeps the player locked offline.
         stopPlayerStreams();
         window.zvPlayerGate = {
             start() {
