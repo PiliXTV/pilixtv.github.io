@@ -5,12 +5,12 @@
     <title>PiliX TV — PBB Collab 3.0</title>
     <meta
       name="description"
-      content="PiliX TV — PBB Collab 3.0 Livestream and Big 4 Ranker."
+      content="PiliX TV — PBB Collab 3.0 Housemates Profile, Big 4 Ranker, and Livestream."
     />
     <meta property="og:title" content="PiliX TV — PBB Collab 3.0" />
     <meta
       property="og:description"
-      content="Watch PBB Collab 3.0 livestream cameras and rank your Kapamilya + Kapuso Big 4."
+      content="Explore PBB Collab 3.0 housemate profiles, rank your Kapamilya + Kapuso Big 4, and watch livestream cameras."
     />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="referrer" content="no-referrer" />
@@ -27,13 +27,14 @@
     />
     <link rel="stylesheet" href="/live-stream4.css" />
     <link rel="stylesheet" href="/app-shell.css" />
+    <link rel="stylesheet" href="/housemates-profile.css" />
     <link rel="stylesheet" href="/ranker/styles.css" />
     <link rel="stylesheet" href="/ranker/ranker-theme.css" />
     <script src="https://cdn.jsdelivr.net/npm/shaka-player@4.3.6/dist/shaka-player.compiled.js"></script>
     <script src="/js/theme.js"></script>
     <script type="module" crossorigin src="/assets/index-P2Xu9kJm.js"></script>
   </head>
-  <body data-app-tab="ranker">
+  <body data-app-tab="profiles">
     <header class="site-header">
       <div class="header-inner">
         <div class="brand">
@@ -96,23 +97,82 @@
     <div class="app-tabs" role="tablist" aria-label="PiliX sections">
       <button
         type="button"
+        class="app-tab is-active"
+        role="tab"
+        data-app-tab="profiles"
+        aria-selected="true"
+      >
+        PBB Collab 3.0 Housemates Profile
+      </button>
+      <button
+        type="button"
+        class="app-tab"
+        role="tab"
+        data-app-tab="ranker"
+        aria-selected="false"
+      >
+        PBB collab 3.0 Big 4 Ranker
+      </button>
+      <button
+        type="button"
         class="app-tab"
         role="tab"
         data-app-tab="livestream"
         aria-selected="false"
       >
-        PBB collab 3.0 Livestream
-      </button>
-      <button
-        type="button"
-        class="app-tab is-active"
-        role="tab"
-        data-app-tab="ranker"
-        aria-selected="true"
-      >
-        PBB collab 3.0 Big 4 Ranker
+        PBB Collab 3.0 Livestream
       </button>
     </div>
+
+    <section id="panel-profiles" role="tabpanel">
+      <div class="hm-profile-banner">
+        <img
+          src="/ranker/assets/logo_pbb_collab.png"
+          alt="Pinoy Big Brother Collab 3.0"
+        />
+        <h1>PBB Collab 3.0 Housemates Profile</h1>
+        <p>Kapamilya &amp; Kapuso housemates — tap a face for details</p>
+      </div>
+
+      <div class="hm-profile-filters" id="hm-profile-filters">
+        <div class="hm-filter-row" role="group" aria-label="Outer circle team">
+          <span class="hm-filter-label">Outer circle</span>
+          <button type="button" class="hm-chip is-active" data-team="kapamilya">
+            Kapamilya
+          </button>
+          <button type="button" class="hm-chip" data-team="kapuso">Kapuso</button>
+        </div>
+        <div class="hm-filter-row" role="group" aria-label="Status filters">
+          <span class="hm-filter-label">Status</span>
+          <button type="button" class="hm-chip" data-status="safe">Safe</button>
+          <button type="button" class="hm-chip" data-status="nominated">
+            Nominated
+          </button>
+          <button type="button" class="hm-chip" data-status="immunity">
+            With Immunity
+          </button>
+          <button type="button" class="hm-chip" data-status="evicted">Evicted</button>
+        </div>
+      </div>
+
+      <div class="hm-orbit-stage" id="hm-orbit-stage" aria-label="Housemate circles">
+        <div class="hm-orbit-center">
+          <img src="/ranker/assets/logo_pbb_collab.png" alt="" />
+        </div>
+        <div class="hm-orbit-ring" id="hm-orbit-outer" aria-label="Outer circle"></div>
+        <div class="hm-orbit-ring" id="hm-orbit-inner" aria-label="Inner circle"></div>
+      </div>
+
+      <p class="hm-profile-empty" id="hm-profile-empty" hidden>
+        No housemates match these filters.
+      </p>
+
+      <div
+        class="hm-profile-detail"
+        id="hm-profile-detail"
+        aria-live="polite"
+      ></div>
+    </section>
 
     <section id="panel-livestream" role="tabpanel" hidden>
       <div class="player-layout" id="main-content">
@@ -173,9 +233,9 @@
       </nav>
     </section>
 
-    <section id="panel-ranker" role="tabpanel">
+    <section id="panel-ranker" role="tabpanel" hidden>
       <div id="top-banner">
-        <p id="version">v3.0.25</p>
+        <p id="version">v3.0.26</p>
         <img
           id="banner-image"
           class="banner-image--official"
@@ -381,6 +441,7 @@
     <script src="/live-stream4.js"></script>
     <script src="/js/livestream-invite.js"></script>
     <script src="/js/stream-settings.js"></script>
+    <script src="/js/housemates-profile.js"></script>
     <script src="/ranker/scripts/csv.js"></script>
     <script src="/ranker/scripts/dragdrop.js"></script>
     <script src="/ranker/scripts/housematesort.js"></script>

@@ -8,18 +8,33 @@
       var params = new URLSearchParams(window.location.search || "");
       if (params.get("r")) return "ranker";
       var q = String(params.get("tab") || "").toLowerCase();
-      if (q === "ranker" || q === "livestream") return q;
+      if (q === "ranker" || q === "livestream" || q === "profiles" || q === "profile") {
+        return q === "profile" ? "profiles" : q;
+      }
       var hash = String(window.location.hash || "")
         .replace(/^#/, "")
         .toLowerCase();
       if (hash === "ranker" || hash.indexOf("ranker") === 0) return "ranker";
       if (hash === "livestream") return "livestream";
+      if (
+        hash === "profiles" ||
+        hash === "profile" ||
+        hash.indexOf("profile") === 0 ||
+        hash.indexOf("housemate") === 0
+      ) {
+        return "profiles";
+      }
     } catch (err) {}
 
-    if (document.body.getAttribute("data-app-tab") === "ranker") return "ranker";
+    var bodyTab = document.body.getAttribute("data-app-tab");
+    if (bodyTab === "ranker" || bodyTab === "profiles" || bodyTab === "livestream") {
+      return bodyTab;
+    }
 
     var rankerPanel = document.getElementById("panel-ranker");
     if (rankerPanel && !rankerPanel.hidden) return "ranker";
+    var profilesPanel = document.getElementById("panel-profiles");
+    if (profilesPanel && !profilesPanel.hidden) return "profiles";
 
     return "livestream";
   }

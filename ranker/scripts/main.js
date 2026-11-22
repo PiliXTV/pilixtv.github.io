@@ -7,7 +7,7 @@ var pendingRankingIds = null;
 document.addEventListener("DOMContentLoaded", async function () {
   ranking = newRanking();
   pendingRankingIds = parseRankingIdsFromUrl();
-  await readFromCSV("/ranker/housemate_info.csv?v=3.0.25");
+  await readFromCSV("/ranker/housemate_info.csv?v=3.0.26");
   if (pendingRankingIds) {
     applyRankingIds(pendingRankingIds);
   }
@@ -60,6 +60,8 @@ function convertCSVArrayToHousemateData(csvArrays) {
       safe: status === "s" || status === "i",
       big4: status === "b",
       id: parseInt(housemateArray[7], 10) - 1,
+      moniker: housemateArray[8] || "",
+      birthday: housemateArray[9] || "",
       image: housemateArray[1].toLowerCase() + ".png",
       selected: false,
     };

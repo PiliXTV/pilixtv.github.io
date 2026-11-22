@@ -1173,7 +1173,8 @@ body.pseudo-fs-active .bottom-nav { display: none !important; }
   display: none !important;
 }
 body.nominated-float-open .livestream-offline-float,
-body[data-app-tab="ranker"] .livestream-offline-float {
+body[data-app-tab="ranker"] .livestream-offline-float,
+body[data-app-tab="profiles"] .livestream-offline-float {
   display: none !important;
 }
 .livestream-offline-float__card {

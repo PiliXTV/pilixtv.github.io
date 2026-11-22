@@ -1,30 +1,51 @@
 (function () {
   var TAB_KEY = 'pilix_app_tab'
+  var VALID = { profiles: 1, ranker: 1, livestream: 1 }
   var livestream = document.getElementById('panel-livestream')
   var ranker = document.getElementById('panel-ranker')
+  var profiles = document.getElementById('panel-profiles')
   // Only real tab buttons — never body[data-app-tab], or every page click retriggers setTab.
   var buttons = Array.prototype.slice.call(
     document.querySelectorAll('.app-tab[data-app-tab], [role="tab"][data-app-tab]')
   )
-  if (!livestream || !ranker || !buttons.length) return
+  if (!livestream || !ranker || !profiles || !buttons.length) return
+
+  function normalizeTab(tab) {
+    var t = String(tab || '').toLowerCase()
+    if (t === 'profile' || t === 'housemates' || t === 'hm') return 'profiles'
+    return VALID[t] ? t : 'profiles'
+  }
 
   function desiredTab() {
     var params = new URLSearchParams(window.location.search)
     if (params.get('r')) return 'ranker'
     var q = (params.get('tab') || '').toLowerCase()
-    if (q === 'ranker' || q === 'livestream') return q
+    if (q === 'ranker' || q === 'livestream' || q === 'profiles' || q === 'profile') {
+      return normalizeTab(q)
+    }
     var hash = (window.location.hash || '').replace(/^#/, '').toLowerCase()
     if (hash === 'ranker' || hash.indexOf('ranker') === 0) return 'ranker'
     if (hash === 'livestream') return 'livestream'
-    // Bare site URL (pilixtv.vercel.app / pilixtv.github.io) lands on Ranker.
-    return 'ranker'
+    if (
+      hash === 'profiles' ||
+      hash === 'profile' ||
+      hash.indexOf('profile') === 0 ||
+      hash.indexOf('housemate') === 0
+    ) {
+      return 'profiles'
+    }
+    // Bare site URL lands on Housemates Profile (first tab).
+    return 'profiles'
   }
 
   function syncUrl(next) {
     var url = new URL(window.location.href)
-    if (next === 'ranker') {
-      // Ranker is the home view — keep root URL (and optional shared ?r=).
+    if (next === 'profiles') {
+      // Profiles is the home view — keep root URL.
       url.searchParams.delete('tab')
+      url.searchParams.delete('r')
+    } else if (next === 'ranker') {
+      url.searchParams.set('tab', 'ranker')
     } else {
       url.searchParams.set('tab', 'livestream')
       url.searchParams.delete('r')
@@ -35,11 +56,12 @@
   }
 
   function setTab(tab, pushUrl) {
-    var next = tab === 'ranker' ? 'ranker' : 'livestream'
+    var next = normalizeTab(tab)
     var prev = document.body.getAttribute('data-app-tab')
     document.body.setAttribute('data-app-tab', next)
     livestream.hidden = next !== 'livestream'
     ranker.hidden = next !== 'ranker'
+    profiles.hidden = next !== 'profiles'
     buttons.forEach(function (btn) {
       var active = btn.getAttribute('data-app-tab') === next
       btn.classList.toggle('is-active', active)
@@ -69,6 +91,6 @@
 
   var initial = desiredTab()
   setTab(initial, false)
-  // Normalize bookmarks like ?tab=ranker → clean root while staying on Ranker.
-  if (initial === 'ranker') syncUrl('ranker')
+  // Normalize bookmarks like ?tab=profiles → clean root while staying on Profiles.
+  if (initial === 'profiles') syncUrl('profiles')
 })()

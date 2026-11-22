@@ -38,7 +38,8 @@
 }
 
 #panel-livestream[hidden],
-#panel-ranker[hidden] {
+#panel-ranker[hidden],
+#panel-profiles[hidden] {
   display: none !important;
 }
 
