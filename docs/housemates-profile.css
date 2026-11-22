@@ -137,16 +137,17 @@
   --hex-w: 68px;
   --hex-h: calc(var(--hex-w) * 0.866);
   --hex-clip: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  --phase: 0deg;
   position: absolute;
   left: 50%;
   top: 50%;
   width: var(--hex-w);
   height: var(--hex-h);
   margin: calc(var(--hex-h) / -2) 0 0 calc(var(--hex-w) / -2);
-  /* Radius uses stage size — % on translate would be relative to the hex itself. */
-  transform: rotate(calc(360deg * var(--i) / var(--n)))
+  /* --phase offsets inner ring so each hex sits between two outer hexes. */
+  transform: rotate(calc(360deg * var(--i) / var(--n) + var(--phase)))
     translateY(calc(var(--orbit-size) * var(--radius-factor, 0.42) * -1))
-    rotate(calc(-360deg * var(--i) / var(--n)));
+    rotate(calc(-1 * (360deg * var(--i) / var(--n) + var(--phase))));
   pointer-events: auto;
   cursor: pointer;
   z-index: 3;
@@ -156,11 +157,11 @@
 }
 
 .hm-hex--outer {
-  --hex-w: 92px;
+  --hex-w: 118px;
 }
 
 .hm-hex--inner {
-  --hex-w: 62px;
+  --hex-w: 72px;
 }
 
 .hm-hex__bob {
@@ -191,17 +192,14 @@
   background: var(--hex-border, #dc2626);
   box-sizing: border-box;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
   transition: background-color 0.25s ease, filter 0.25s ease, opacity 0.25s ease;
 }
 
 .hm-hex__photo {
-  /* Photo fills the hex; bottom name strip uses the border color behind it. */
-  position: relative;
-  flex: 1 1 auto;
-  min-height: 0;
-  margin: 3px 3px 0;
+  /* Same flat-top clip, inset — creates a true hex border ring. */
+  position: absolute;
+  inset: 4px;
+  clip-path: var(--hex-clip);
   overflow: hidden;
   background: var(--card-bg);
 }
@@ -287,26 +285,37 @@
 }
 
 .hm-hex__nickname {
-  position: relative;
+  position: absolute;
+  left: 22%;
+  right: 22%;
+  bottom: 3px;
   z-index: 2;
-  flex: 0 0 auto;
-  margin: 0 18% 2px;
-  padding: 1px 2px 3px;
+  height: 1.15em;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: transparent;
+  /* Sits on the flat bottom of the hex border ring (same border color). */
+  background: var(--hex-border, #dc2626);
   color: #fff;
   font-family: "Outfit", sans-serif;
-  font-size: clamp(0.48rem, 1.45vw, 0.64rem);
+  font-size: clamp(0.5rem, 1.5vw, 0.7rem);
   font-weight: 700;
   letter-spacing: 0.02em;
-  line-height: 1.05;
+  line-height: 1;
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   pointer-events: none;
+}
+
+.hm-hex--safe .hm-hex__nickname {
+  animation: hm-safe-border 2s steps(1, end) infinite;
+}
+
+.hm-hex--evicted .hm-hex__nickname {
+  background-color: #09090b !important;
+  animation: none;
 }
 
 .hm-hex.is-active .hm-hex__bob {
@@ -336,18 +345,22 @@
 }
 
 .hm-profile-detail__photo {
+  --hex-clip: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
   width: 92px;
   height: calc(92px * 0.866);
   flex: 0 0 auto;
-  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
-  box-shadow: 0 0 0 3px var(--detail-border, #dc2626);
+  clip-path: var(--hex-clip);
+  background: var(--detail-border, #dc2626);
   overflow: hidden;
-  background: var(--hover-bg);
+  position: relative;
 }
 
 .hm-profile-detail__photo img {
-  width: 100%;
-  height: 100%;
+  position: absolute;
+  inset: 3px;
+  width: calc(100% - 6px);
+  height: calc(100% - 6px);
+  clip-path: var(--hex-clip);
   object-fit: cover;
   object-position: center top;
   display: block;
@@ -453,15 +466,19 @@ body[data-app-tab="profiles"] .livestream-offline-float {
   }
 
   .hm-hex--outer {
-    --hex-w: 72px;
+    --hex-w: 88px;
   }
 
   .hm-hex--inner {
-    --hex-w: 50px;
+    --hex-w: 56px;
   }
 
   .hm-hex__nickname {
-    font-size: 0.46rem;
+    font-size: 0.48rem;
+  }
+
+  .hm-hex__photo {
+    inset: 3px;
   }
 
   .hm-profile-detail__grid {
@@ -471,10 +488,10 @@ body[data-app-tab="profiles"] .livestream-offline-float {
 
 @media (min-width: 721px) {
   .hm-hex--outer {
-    --hex-w: 96px;
+    --hex-w: 124px;
   }
 
   .hm-hex--inner {
-    --hex-w: 66px;
+    --hex-w: 76px;
   }
 }

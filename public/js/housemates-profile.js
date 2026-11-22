@@ -128,13 +128,14 @@
     return parts.join(" ");
   }
 
-  function makeHex(hm, index, total, radiusFactor, ring) {
+  function makeHex(hm, index, total, radiusFactor, ring, phaseDeg) {
     var el = document.createElement("button");
     el.type = "button";
     el.className = hexClass(hm, ring);
     el.style.setProperty("--i", String(index));
     el.style.setProperty("--n", String(Math.max(total, 1)));
     el.style.setProperty("--radius-factor", String(radiusFactor));
+    el.style.setProperty("--phase", String(phaseDeg || 0) + "deg");
     el.setAttribute("aria-label", hm.fullname + " profile");
     el.dataset.id = String(hm.id);
 
@@ -193,13 +194,13 @@
     }
   }
 
-  function renderRing(container, list, radiusFactor, ring) {
+  function renderRing(container, list, radiusFactor, ring, phaseDeg) {
     if (!container) return;
     container.innerHTML = "";
     var n = list.length;
     if (!n) return;
     list.forEach(function (hm, i) {
-      container.appendChild(makeHex(hm, i, n, radiusFactor, ring));
+      container.appendChild(makeHex(hm, i, n, radiusFactor, ring, phaseDeg));
     });
   }
 
@@ -214,9 +215,11 @@
 
     var outerList = outerTeam === "kapamilya" ? kapamilya : kapuso;
     var innerList = outerTeam === "kapamilya" ? kapuso : kapamilya;
+    // Half-step of the outer ring so inner hexes sit between outer ones.
+    var nestPhase = outerList.length ? 180 / outerList.length : 0;
 
-    renderRing(outerRing, outerList, 0.42, "outer");
-    renderRing(innerRing, innerList, 0.26, "inner");
+    renderRing(outerRing, outerList, 0.43, "outer", 0);
+    renderRing(innerRing, innerList, 0.29, "inner", nestPhase);
   }
 
   function renderDetail(hm) {
