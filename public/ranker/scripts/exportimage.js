@@ -5,8 +5,12 @@ var EXPORT_HEIGHT = 1980;
 var EXPORT_FRAME_SRC = "/ranker/assets/export/export_frame.jpg";
 var EXPORT_CARD_DIR = "/ranker/assets/export/cards/";
 var EXPORT_LOGO_SRC = "/ranker/assets/logo_pbb.png";
+var EXPORT_SUN_SRC = "/ranker/assets/export/sun_empty.png";
+var EXPORT_STAR_SRC = "/ranker/assets/export/star_empty.png";
+var EXPORT_EYE_SRC = "/ranker/assets/export/pbb_eye.png";
+var HOUSEMATE_PHOTO_DIR = "/ranker/assets/housemates/";
 
-// CSV shortname "Shea" maps to collage filename "shereenia".
+// CSV shortname "Shea" maps to collage filename "shereenia" (legacy cards).
 var EXPORT_NAME_ALIASES = {
   shea: "shereenia",
 };
@@ -17,14 +21,6 @@ var exportPreviewUrl = null;
 function saveBig4Image() {
   var kapamilya = ranking.slice(0, 4);
   var kapuso = ranking.slice(4, 8);
-  var selectedCount =
-    kapamilya.filter(function (h) { return h && h.id >= 0; }).length +
-    kapuso.filter(function (h) { return h && h.id >= 0; }).length;
-
-  if (selectedCount === 0) {
-    alert("Pick at least one Kapamilya or Kapuso housemate before saving an image.");
-    return;
-  }
 
   var btn = document.getElementById("saveimage-button");
   if (btn) {
@@ -144,6 +140,7 @@ async function ensureExportFonts() {
     await Promise.all([
       document.fonts.load('800 64px "Archivo Black"'),
       document.fonts.load('700 22px "Outfit"'),
+      document.fonts.load('800 28px "Outfit"'),
     ]);
   } catch (err) {
     // Fall back to system fonts if webfont load fails.
@@ -158,6 +155,16 @@ function exportCardKey(housemate) {
   return team + "_" + fileStem;
 }
 
+function housematePhotoSrc(housemate) {
+  if (!housemate || housemate.id < 0 || !housemate.shortname) return null;
+  return HOUSEMATE_PHOTO_DIR + String(housemate.shortname).toLowerCase() + ".png";
+}
+
+function housemateNickname(housemate) {
+  if (!housemate || housemate.id < 0) return null;
+  return String(housemate.shortname || "").trim() || null;
+}
+
 async function generateBig4ExportImage(kapamilya, kapuso) {
   await ensureExportFonts();
 
@@ -169,67 +176,60 @@ async function generateBig4ExportImage(kapamilya, kapuso) {
   var frame = await loadImage(EXPORT_FRAME_SRC);
   ctx.drawImage(frame, 0, 0, EXPORT_WIDTH, EXPORT_HEIGHT);
 
-  var cardKeys = [];
+  var assets = {
+    sun: await loadImage(EXPORT_SUN_SRC),
+    star: await loadImage(EXPORT_STAR_SRC),
+    eye: await loadImage(EXPORT_EYE_SRC),
+    photos: {},
+  };
+
+  var photoSrcs = [];
   [kapamilya, kapuso].forEach(function (group) {
     group.forEach(function (hm) {
-      var key = exportCardKey(hm);
-      if (key) cardKeys.push(key);
+      var src = housematePhotoSrc(hm);
+      if (src) photoSrcs.push(src);
     });
   });
-
-  var cardMap = {};
   await Promise.all(
-    cardKeys.map(async function (key) {
-      cardMap[key] = await loadImageOptional(EXPORT_CARD_DIR + key + ".png");
+    photoSrcs.map(async function (src) {
+      assets.photos[src] = await loadImageOptional(src);
     })
   );
 
   var logo = await loadImage(EXPORT_LOGO_SRC);
-
-  // Logo sits high under the top border; Big 4 stack is centered in the space below.
-  var cardW = 310;
-  var cardH = 386;
-  var gapX = 18;
-  var titleBand = 46;
-  var titleToCards = 68; // little space between section headers and HM cards
-  var sectionGap = 86; // a little more space between Kapamilya and Kapuso
   var logoMaxW = 520;
   var logoScale = Math.min(1, logoMaxW / logo.width);
   var logoW = Math.round(logo.width * logoScale);
   var logoH = Math.round(logo.height * logoScale);
   var logoX = Math.round((EXPORT_WIDTH - logoW) / 2);
-  // A bit lower under the top border.
   var logoY = 72;
   ctx.drawImage(logo, logoX, logoY, logoW, logoH);
 
-  var stackHeight =
-    titleBand +
-    titleToCards +
-    cardH +
-    sectionGap +
-    titleBand +
-    titleToCards +
-    cardH;
-  var footerReserve = 110;
-  var availableTop = logoY + logoH + 20;
+  var winnerSize = 300;
+  var minorSize = 190;
+  var pyramidGapY = 36;
+  var titleBand = 52;
+  var sectionGap = 54;
+  var pyramidH = winnerSize + pyramidGapY + minorSize + 28;
+  var stackHeight = titleBand + 18 + pyramidH + sectionGap + titleBand + 18 + pyramidH;
+  var footerReserve = 100;
+  var availableTop = logoY + logoH + 16;
   var availableBottom = EXPORT_HEIGHT - footerReserve;
-  // Center in the remaining space, then nudge a bit higher so it still reads centered.
   var stackTop = Math.round(
-    availableTop + (availableBottom - availableTop - stackHeight) / 2 - 78
+    availableTop + (availableBottom - availableTop - stackHeight) / 2 - 40
   );
-  // Keep a little breathing room under the logo if centering would collide.
-  stackTop = Math.max(stackTop, logoY + logoH + 18);
+  stackTop = Math.max(stackTop, logoY + logoH + 14);
 
   var kapamilyaTitleY = stackTop + titleBand / 2;
-  var kapamilyaCardsY = stackTop + titleBand + titleToCards;
-  var kapusoTitleY = kapamilyaCardsY + cardH + sectionGap + titleBand / 2;
-  var kapusoCardsY = kapamilyaCardsY + cardH + sectionGap + titleBand + titleToCards;
+  var kapamilyaPyramidY = stackTop + titleBand + 18;
+  var kapusoTitleY = kapamilyaPyramidY + pyramidH + sectionGap + titleBand / 2;
+  var kapusoPyramidY = kapamilyaPyramidY + pyramidH + sectionGap + titleBand + 18;
 
   drawSectionTitle(ctx, "KAPAMILYA BIG 4", EXPORT_WIDTH / 2, kapamilyaTitleY, "#c8102e");
-  drawReadyCardRow(ctx, kapamilya, kapamilyaCardsY, cardW, cardH, gapX, cardMap);
+  drawCirclePyramid(ctx, kapamilya, kapamilyaPyramidY, winnerSize, minorSize, pyramidGapY, assets);
 
   drawSectionTitle(ctx, "KAPUSO BIG 4", EXPORT_WIDTH / 2, kapusoTitleY, "#0057b8");
-  drawReadyCardRow(ctx, kapuso, kapusoCardsY, cardW, cardH, gapX, cardMap);
+  drawCirclePyramid(ctx, kapuso, kapusoPyramidY, winnerSize, minorSize, pyramidGapY, assets);
 
   ctx.save();
   ctx.fillStyle = "rgba(42, 31, 22, 0.7)";
@@ -271,47 +271,152 @@ function drawSectionTitle(ctx, text, x, y, color) {
   ctx.restore();
 }
 
-function drawReadyCardRow(ctx, housemates, top, cardW, cardH, gapX, cardMap) {
-  var count = 4;
-  var totalW = count * cardW + (count - 1) * gapX;
-  var startX = (EXPORT_WIDTH - totalW) / 2;
+function drawCirclePyramid(ctx, housemates, top, winnerSize, minorSize, gapY, assets) {
+  var list = housemates || [];
+  var cx = EXPORT_WIDTH / 2;
 
-  for (var i = 0; i < count; i++) {
-    var hm = housemates[i];
-    var x = startX + i * (cardW + gapX);
-    var key = exportCardKey(hm);
-    var card = key ? cardMap[key] : null;
-    drawReadyCard(ctx, x, top, cardW, cardH, card, i + 1);
+  // Rank 1 — large circle on top
+  drawRankCircle(ctx, {
+    hm: list[0],
+    rank: 1,
+    cx: cx,
+    cy: top + winnerSize / 2,
+    size: winnerSize,
+    assets: assets,
+  });
+
+  // Ranks 2–4 — row under winner
+  var gapX = 28;
+  var rowW = 3 * minorSize + 2 * gapX;
+  var startX = cx - rowW / 2 + minorSize / 2;
+  var rowY = top + winnerSize + gapY + minorSize / 2;
+  for (var i = 0; i < 3; i++) {
+    drawRankCircle(ctx, {
+      hm: list[i + 1],
+      rank: i + 2,
+      cx: startX + i * (minorSize + gapX),
+      cy: rowY,
+      size: minorSize,
+      assets: assets,
+    });
   }
 }
 
-function drawReadyCard(ctx, x, y, w, h, cardImg, rank) {
+function drawRankCircle(ctx, opts) {
+  var hm = opts.hm;
+  var rank = opts.rank;
+  var cx = opts.cx;
+  var cy = opts.cy;
+  var size = opts.size;
+  var assets = opts.assets;
+  var r = size / 2;
+  var border = Math.max(10, Math.round(size * 0.055));
+  var nick = housemateNickname(hm);
+  var photoSrc = housematePhotoSrc(hm);
+  var photo = photoSrc ? assets.photos[photoSrc] : null;
+  var isWinner = rank === 1;
+  var emptyArt = isWinner ? assets.sun : assets.star;
+  var label = nick ? nick.toUpperCase() : isWinner ? "BIG WINNER" : String(rank);
+  var badgeColor = "#b0b0b0";
+
   ctx.save();
-  ctx.shadowColor = "rgba(0, 0, 0, 0.22)";
-  ctx.shadowBlur = 12;
+  ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
+  ctx.shadowBlur = 14;
   ctx.shadowOffsetY = 6;
 
-  if (cardImg) {
-    // Use the provided card artwork as-is (already includes border + name).
-    ctx.drawImage(cardImg, x, y, w, h);
-  } else {
-    // Empty slot placeholder — no team-colored border.
-    ctx.fillStyle = "rgba(255, 253, 248, 0.92)";
-    roundRect(ctx, x, y, w, h, 8);
-    ctx.fill();
-    ctx.shadowColor = "transparent";
-    ctx.strokeStyle = "rgba(42, 31, 22, 0.18)";
-    ctx.lineWidth = 2;
-    roundRect(ctx, x + 1, y + 1, w - 2, h - 2, 8);
-    ctx.stroke();
-    ctx.fillStyle = "rgba(42, 31, 22, 0.35)";
-    ctx.font = '800 42px "Archivo Black", "Arial Black", sans-serif';
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(String(rank), x + w / 2, y + h / 2);
+  // Outer gray ring
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.fillStyle = "#cfcfcf";
+  ctx.fill();
+  ctx.shadowColor = "transparent";
+
+  // Inner yellow / photo disc
+  var innerR = r - border;
+  ctx.beginPath();
+  ctx.arc(cx, cy, innerR, 0, Math.PI * 2);
+  ctx.fillStyle = "#ffc133";
+  ctx.fill();
+
+  if (photo) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, innerR, 0, Math.PI * 2);
+    ctx.clip();
+    drawCoverImage(ctx, photo, cx - innerR, cy - innerR, innerR * 2, innerR * 2);
+    ctx.restore();
+  } else if (emptyArt) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(cx, cy, innerR, 0, Math.PI * 2);
+    ctx.clip();
+    drawCoverImage(ctx, emptyArt, cx - innerR, cy - innerR, innerR * 2, innerR * 2);
+    ctx.restore();
+  }
+
+  // Soft rim highlight
+  ctx.beginPath();
+  ctx.arc(cx, cy, innerR - 0.5, 0, Math.PI * 2);
+  ctx.strokeStyle = "rgba(255,255,255,0.35)";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Bottom nickname / rank badge
+  var badgeW = isWinner ? size * 0.72 : size * 0.42;
+  var badgeH = Math.max(22, size * 0.13);
+  var badgeX = cx - badgeW / 2;
+  var badgeY = cy + r - badgeH * 0.55;
+  ctx.fillStyle = badgeColor;
+  roundRect(ctx, badgeX, badgeY, badgeW, badgeH, 4);
+  ctx.fill();
+
+  ctx.fillStyle = "#ffffff";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  var fontSize = isWinner
+    ? Math.max(14, Math.round(size * 0.075))
+    : Math.max(16, Math.round(size * 0.11));
+  if (nick && nick.length > 10) fontSize = Math.max(12, fontSize - 2);
+  ctx.font = '800 ' + fontSize + 'px "Outfit", "Arial Black", sans-serif';
+  ctx.fillText(label, cx, badgeY + badgeH / 2 + 1, badgeW - 10);
+
+  // Top eye logo badge
+  var eyeSize = isWinner ? size * 0.22 : size * 0.26;
+  var eyeCy = cy - r + eyeSize * 0.15;
+  ctx.beginPath();
+  ctx.arc(cx, eyeCy, eyeSize / 2 + 3, 0, Math.PI * 2);
+  ctx.fillStyle = "#e3e3e3";
+  ctx.fill();
+  if (assets.eye) {
+    drawContainImage(
+      ctx,
+      assets.eye,
+      cx - eyeSize / 2,
+      eyeCy - eyeSize / 2,
+      eyeSize,
+      eyeSize
+    );
   }
 
   ctx.restore();
+}
+
+function drawCoverImage(ctx, img, x, y, w, h) {
+  var scale = Math.max(w / img.width, h / img.height);
+  var dw = img.width * scale;
+  var dh = img.height * scale;
+  var dx = x + (w - dw) / 2;
+  var dy = y + (h - dh) / 2;
+  ctx.drawImage(img, dx, dy, dw, dh);
+}
+
+function drawContainImage(ctx, img, x, y, w, h) {
+  var scale = Math.min(w / img.width, h / img.height);
+  var dw = img.width * scale;
+  var dh = img.height * scale;
+  var dx = x + (w - dw) / 2;
+  var dy = y + (h - dh) / 2;
+  ctx.drawImage(img, dx, dy, dw, dh);
 }
 
 function roundRect(ctx, x, y, w, h, r) {
