@@ -13,40 +13,9 @@
   color: var(--text-main);
 }
 
-.hm-profile-banner {
-  text-align: center;
-  margin-bottom: 14px;
-}
-
-.hm-profile-banner img {
-  width: min(280px, 70vw);
-  height: auto;
-  display: block;
-  margin: 0 auto 8px;
-  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.45));
-}
-
-.hm-profile-banner h1 {
-  margin: 0;
-  font-size: clamp(1.05rem, 3.4vw, 1.45rem);
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  color: var(--text-main);
-}
-
-.hm-profile-banner p {
-  margin: 6px 0 0;
-  font-size: 0.9rem;
-  color: var(--text-muted);
-  font-weight: 500;
-}
-
 .hm-profile-filters {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin: 0 auto 18px;
-  max-width: 720px;
+  margin: 4px auto 14px;
+  max-width: 900px;
 }
 
 .hm-filter-row {
@@ -55,16 +24,6 @@
   align-items: center;
   gap: 8px;
   justify-content: center;
-}
-
-.hm-filter-label {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  width: 100%;
-  text-align: center;
 }
 
 .hm-chip {
@@ -174,12 +133,16 @@
 }
 
 .hm-hex {
+  /* Flat-top hex: wider than tall (width : height ≈ 1 : 0.866) */
+  --hex-w: 68px;
+  --hex-h: calc(var(--hex-w) * 0.866);
+  --hex-clip: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
   position: absolute;
   left: 50%;
   top: 50%;
-  width: var(--hex-size, 64px);
-  height: var(--hex-size, 64px);
-  margin: calc(var(--hex-size, 64px) / -2) 0 0 calc(var(--hex-size, 64px) / -2);
+  width: var(--hex-w);
+  height: var(--hex-h);
+  margin: calc(var(--hex-h) / -2) 0 0 calc(var(--hex-w) / -2);
   /* Radius uses stage size — % on translate would be relative to the hex itself. */
   transform: rotate(calc(360deg * var(--i) / var(--n)))
     translateY(calc(var(--orbit-size) * var(--radius-factor, 0.42) * -1))
@@ -190,6 +153,14 @@
   border: 0;
   padding: 0;
   background: transparent;
+}
+
+.hm-hex--outer {
+  --hex-w: 92px;
+}
+
+.hm-hex--inner {
+  --hex-w: 62px;
 }
 
 .hm-hex__bob {
@@ -216,17 +187,21 @@
   position: relative;
   width: 100%;
   height: 100%;
-  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  clip-path: var(--hex-clip);
   background: var(--hex-border, #dc2626);
   box-sizing: border-box;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
   transition: background-color 0.25s ease, filter 0.25s ease, opacity 0.25s ease;
 }
 
 .hm-hex__photo {
-  position: absolute;
-  inset: 3px;
-  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  /* Photo fills the hex; bottom name strip uses the border color behind it. */
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  margin: 3px 3px 0;
   overflow: hidden;
   background: var(--card-bg);
 }
@@ -312,19 +287,21 @@
 }
 
 .hm-hex__nickname {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: relative;
   z-index: 2;
-  padding: 1.1em 0.35em 0.55em;
-  background: linear-gradient(to top, rgba(9, 9, 11, 0.92) 35%, rgba(9, 9, 11, 0));
+  flex: 0 0 auto;
+  margin: 0 18% 2px;
+  padding: 1px 2px 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
   color: #fff;
   font-family: "Outfit", sans-serif;
-  font-size: clamp(0.48rem, 1.5vw, 0.62rem);
+  font-size: clamp(0.48rem, 1.45vw, 0.64rem);
   font-weight: 700;
   letter-spacing: 0.02em;
-  line-height: 1.1;
+  line-height: 1.05;
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
@@ -359,11 +336,11 @@
 }
 
 .hm-profile-detail__photo {
-  width: 84px;
-  height: 84px;
+  width: 92px;
+  height: calc(92px * 0.866);
   flex: 0 0 auto;
-  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
-  border: 3px solid var(--detail-border, #dc2626);
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  box-shadow: 0 0 0 3px var(--detail-border, #dc2626);
   overflow: hidden;
   background: var(--hover-bg);
 }
@@ -455,14 +432,6 @@
   color: #a1a1aa;
 }
 
-.hm-profile-empty {
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 0.92rem;
-  font-weight: 500;
-  padding: 24px 12px;
-}
-
 body[data-app-tab="profiles"] .bottom-nav,
 body[data-app-tab="profiles"] #header-viewer-badge,
 body[data-app-tab="profiles"] #stream-settings-toggle,
@@ -483,13 +452,16 @@ body[data-app-tab="profiles"] .livestream-offline-float {
     --orbit-size: min(96vw, 420px);
   }
 
-  .hm-hex {
-    --hex-size: 52px;
+  .hm-hex--outer {
+    --hex-w: 72px;
+  }
+
+  .hm-hex--inner {
+    --hex-w: 50px;
   }
 
   .hm-hex__nickname {
-    font-size: 0.48rem;
-    padding: 1em 0.25em 0.45em;
+    font-size: 0.46rem;
   }
 
   .hm-profile-detail__grid {
@@ -498,7 +470,11 @@ body[data-app-tab="profiles"] .livestream-offline-float {
 }
 
 @media (min-width: 721px) {
-  .hm-hex {
-    --hex-size: 72px;
+  .hm-hex--outer {
+    --hex-w: 96px;
+  }
+
+  .hm-hex--inner {
+    --hex-w: 66px;
   }
 }

@@ -9,7 +9,6 @@
   var outerRing = document.getElementById("hm-orbit-outer");
   var innerRing = document.getElementById("hm-orbit-inner");
   var detail = document.getElementById("hm-profile-detail");
-  var emptyEl = document.getElementById("hm-profile-empty");
   var filterRoot = document.getElementById("hm-profile-filters");
 
   var housemates = [];
@@ -99,18 +98,8 @@
       });
   }
 
-  function activeStatusKeys() {
-    return Object.keys(statusFilters).filter(function (k) {
-      return statusFilters[k];
-    });
-  }
-
-  function matchesFilters(hm) {
-    var keys = activeStatusKeys();
-    if (!keys.length) return true;
-    return keys.some(function (k) {
-      return Boolean(hm[k]);
-    });
+  function statusHighlight(hm, key) {
+    return Boolean(statusFilters[key] && hm[key]);
   }
 
   function statusLabel(hm) {
@@ -127,21 +116,22 @@
     return "safe";
   }
 
-  function hexClass(hm) {
-    var parts = ["hm-hex"];
+  function hexClass(hm, ring) {
+    var parts = ["hm-hex", ring === "outer" ? "hm-hex--outer" : "hm-hex--inner"];
     parts.push(hm.kapamilya ? "hm-hex--kapamilya" : "hm-hex--kapuso");
-    if (hm.evicted) parts.push("hm-hex--evicted");
-    else if (hm.safe) parts.push("hm-hex--safe");
-    if (hm.nominated) parts.push("hm-hex--nominated");
-    if (hm.immunity) parts.push("hm-hex--immunity");
+    // Status chrome only when that status filter is active — never hide housemates.
+    if (statusHighlight(hm, "evicted")) parts.push("hm-hex--evicted");
+    else if (statusHighlight(hm, "safe")) parts.push("hm-hex--safe");
+    if (statusHighlight(hm, "nominated")) parts.push("hm-hex--nominated");
+    if (statusHighlight(hm, "immunity")) parts.push("hm-hex--immunity");
     if (selectedId === hm.id) parts.push("is-active");
     return parts.join(" ");
   }
 
-  function makeHex(hm, index, total, radiusFactor) {
+  function makeHex(hm, index, total, radiusFactor, ring) {
     var el = document.createElement("button");
     el.type = "button";
-    el.className = hexClass(hm);
+    el.className = hexClass(hm, ring);
     el.style.setProperty("--i", String(index));
     el.style.setProperty("--n", String(Math.max(total, 1)));
     el.style.setProperty("--radius-factor", String(radiusFactor));
@@ -163,22 +153,21 @@
     img.loading = "lazy";
     img.draggable = false;
     photo.appendChild(img);
+    frame.appendChild(photo);
 
     var nick = document.createElement("span");
     nick.className = "hm-hex__nickname";
     nick.textContent = hm.shortname;
-    photo.appendChild(nick);
+    frame.appendChild(nick);
 
-    frame.appendChild(photo);
-
-    if (hm.nominated && !hm.evicted) {
+    if (statusHighlight(hm, "nominated") && !hm.evicted) {
       var stamp = document.createElement("span");
       stamp.className = "hm-hex__stamp";
       stamp.textContent = "Nominated";
       frame.appendChild(stamp);
     }
 
-    if (hm.immunity && !hm.evicted) {
+    if (statusHighlight(hm, "immunity") && !hm.evicted) {
       var badge = document.createElement("span");
       badge.className = "hm-hex__badge";
       badge.title = "Immunity";
@@ -204,44 +193,30 @@
     }
   }
 
-  function renderRing(container, list, radiusFactor) {
+  function renderRing(container, list, radiusFactor, ring) {
     if (!container) return;
     container.innerHTML = "";
     var n = list.length;
     if (!n) return;
     list.forEach(function (hm, i) {
-      container.appendChild(makeHex(hm, i, n, radiusFactor));
+      container.appendChild(makeHex(hm, i, n, radiusFactor, ring));
     });
   }
 
   function renderRings() {
-    var visible = housemates.filter(matchesFilters);
-    var kapamilya = visible.filter(function (hm) {
+    // Always show every housemate; status chips only restyle borders/badges.
+    var kapamilya = housemates.filter(function (hm) {
       return hm.kapamilya;
     });
-    var kapuso = visible.filter(function (hm) {
+    var kapuso = housemates.filter(function (hm) {
       return hm.kapuso;
     });
 
     var outerList = outerTeam === "kapamilya" ? kapamilya : kapuso;
     var innerList = outerTeam === "kapamilya" ? kapuso : kapamilya;
 
-    if (emptyEl) {
-      emptyEl.hidden = visible.length > 0;
-    }
-
-    renderRing(outerRing, outerList, 0.42);
-    renderRing(innerRing, innerList, 0.26);
-
-    if (selectedId != null) {
-      var still = visible.some(function (hm) {
-        return hm.id === selectedId;
-      });
-      if (!still) {
-        selectedId = null;
-        if (detail) detail.classList.remove("is-open");
-      }
-    }
+    renderRing(outerRing, outerList, 0.42, "outer");
+    renderRing(innerRing, innerList, 0.26, "inner");
   }
 
   function renderDetail(hm) {
@@ -342,10 +317,6 @@
       renderRings();
     } catch (err) {
       console.error("Housemates profile failed to load:", err);
-      if (emptyEl) {
-        emptyEl.hidden = false;
-        emptyEl.textContent = "Could not load housemate profiles.";
-      }
     }
   }
 
