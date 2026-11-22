@@ -99,7 +99,19 @@
   }
 
   function statusHighlight(hm, key) {
+    if (key === "safe") {
+      // Immunity counts as safe for green borders.
+      return Boolean(statusFilters.safe && (hm.safe || hm.immunity));
+    }
     return Boolean(statusFilters[key] && hm[key]);
+  }
+
+  function wantsSafeBorder(hm) {
+    if (hm.evicted) return false;
+    if (statusHighlight(hm, "safe")) return true;
+    // Immunity filter alone also greens the border (immunity = safe).
+    if (statusHighlight(hm, "immunity")) return true;
+    return false;
   }
 
   function statusLabel(hm) {
@@ -121,7 +133,7 @@
     parts.push(hm.kapamilya ? "hm-hex--kapamilya" : "hm-hex--kapuso");
     // Status chrome only when that status filter is active — never hide housemates.
     if (statusHighlight(hm, "evicted")) parts.push("hm-hex--evicted");
-    else if (statusHighlight(hm, "safe")) parts.push("hm-hex--safe");
+    else if (wantsSafeBorder(hm)) parts.push("hm-hex--safe");
     if (statusHighlight(hm, "nominated")) parts.push("hm-hex--nominated");
     if (statusHighlight(hm, "immunity")) parts.push("hm-hex--immunity");
     if (selectedId === hm.id) parts.push("is-active");
@@ -168,15 +180,17 @@
       frame.appendChild(stamp);
     }
 
+    bob.appendChild(frame);
+
+    // Badge sits outside the clipped frame so it stays in front on the flat top.
     if (statusHighlight(hm, "immunity") && !hm.evicted) {
       var badge = document.createElement("span");
       badge.className = "hm-hex__badge";
       badge.title = "Immunity";
       badge.innerHTML = '<i class="fas fa-shield-halved" aria-hidden="true"></i>';
-      frame.appendChild(badge);
+      bob.appendChild(badge);
     }
 
-    bob.appendChild(frame);
     el.appendChild(bob);
     return el;
   }
