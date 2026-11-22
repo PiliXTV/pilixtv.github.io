@@ -125,25 +125,17 @@
     </div>
 
     <section id="panel-profiles" role="tabpanel">
-      <div class="hm-profile-banner">
-        <img
-          src="/ranker/assets/logo_pbb_collab.png"
-          alt="Pinoy Big Brother Collab 3.0"
-        />
-        <h1>PBB Collab 3.0 Housemates Profile</h1>
-        <p>Kapamilya &amp; Kapuso housemates — tap a face for details</p>
-      </div>
-
-      <div class="hm-profile-filters" id="hm-profile-filters">
-        <div class="hm-filter-row" role="group" aria-label="Outer circle team">
-          <span class="hm-filter-label">Outer circle</span>
+      <div
+        class="hm-profile-filters"
+        id="hm-profile-filters"
+        role="group"
+        aria-label="Team and status filters"
+      >
+        <div class="hm-filter-row">
           <button type="button" class="hm-chip is-active" data-team="kapamilya">
             Kapamilya
           </button>
           <button type="button" class="hm-chip" data-team="kapuso">Kapuso</button>
-        </div>
-        <div class="hm-filter-row" role="group" aria-label="Status filters">
-          <span class="hm-filter-label">Status</span>
           <button type="button" class="hm-chip" data-status="safe">Safe</button>
           <button type="button" class="hm-chip" data-status="nominated">
             Nominated
@@ -162,10 +154,6 @@
         <div class="hm-orbit-ring" id="hm-orbit-outer" aria-label="Outer circle"></div>
         <div class="hm-orbit-ring" id="hm-orbit-inner" aria-label="Inner circle"></div>
       </div>
-
-      <p class="hm-profile-empty" id="hm-profile-empty" hidden>
-        No housemates match these filters.
-      </p>
 
       <div
         class="hm-profile-detail"
