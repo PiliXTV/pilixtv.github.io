@@ -26,6 +26,7 @@ for (const name of [
   'live-stream4.css',
   'live-stream4.js',
   'app-shell.css',
+  'housemates-profile.css',
   '.nojekyll',
 ]) {
   const from = join(dist, name)

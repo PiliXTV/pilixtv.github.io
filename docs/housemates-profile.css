@@ -1,0 +1,504 @@
+/* PBB Collab 3.0 Housemates Profile — Outfit + livestream tokens */
+
+#panel-profiles[hidden] {
+  display: none !important;
+}
+
+#panel-profiles {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 16px 48px;
+  animation: fadeIn 0.4s ease;
+  font-family: "Outfit", sans-serif;
+  color: var(--text-main);
+}
+
+.hm-profile-banner {
+  text-align: center;
+  margin-bottom: 14px;
+}
+
+.hm-profile-banner img {
+  width: min(280px, 70vw);
+  height: auto;
+  display: block;
+  margin: 0 auto 8px;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.45));
+}
+
+.hm-profile-banner h1 {
+  margin: 0;
+  font-size: clamp(1.05rem, 3.4vw, 1.45rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--text-main);
+}
+
+.hm-profile-banner p {
+  margin: 6px 0 0;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.hm-profile-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 auto 18px;
+  max-width: 720px;
+}
+
+.hm-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.hm-filter-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  width: 100%;
+  text-align: center;
+}
+
+.hm-chip {
+  appearance: none;
+  border: 1px solid var(--border-color);
+  background: var(--card-bg);
+  color: var(--text-muted);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-family: "Outfit", sans-serif;
+  font-size: 0.82rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.hm-chip:hover {
+  color: var(--text-main);
+  background: var(--hover-bg);
+}
+
+.hm-chip.is-active {
+  background: var(--text-main);
+  color: var(--bg-color);
+  border-color: transparent;
+}
+
+.hm-chip[data-team="kapamilya"].is-active {
+  background: #dc2626;
+  color: #fff;
+}
+
+.hm-chip[data-team="kapuso"].is-active {
+  background: #2563eb;
+  color: #fff;
+}
+
+.hm-chip[data-status="safe"].is-active {
+  background: #16a34a;
+  color: #fff;
+}
+
+.hm-chip[data-status="nominated"].is-active {
+  background: #ea580c;
+  color: #fff;
+}
+
+.hm-chip[data-status="immunity"].is-active {
+  background: #ca8a04;
+  color: #fff;
+}
+
+.hm-chip[data-status="evicted"].is-active {
+  background: #3f3f46;
+  color: #e4e4e7;
+}
+
+.hm-orbit-stage {
+  --orbit-size: min(92vw, 640px);
+  position: relative;
+  width: var(--orbit-size);
+  aspect-ratio: 1;
+  margin: 8px auto 24px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(39, 39, 42, 0.55) 0%, transparent 62%),
+    radial-gradient(circle at 50% 50%, rgba(24, 24, 27, 0.9) 0%, transparent 70%);
+}
+
+.hm-orbit-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 22%;
+  z-index: 2;
+  pointer-events: none;
+  animation: hm-center-pulse 4s ease-in-out infinite;
+}
+
+.hm-orbit-center img {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 6px 16px rgba(0, 0, 0, 0.5));
+}
+
+@keyframes hm-center-pulse {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.04);
+  }
+}
+
+.hm-orbit-ring {
+  position: absolute;
+  inset: 0;
+  /* Allow clicks to pass through empty ring space to hexes on the other ring. */
+  pointer-events: none;
+}
+
+.hm-orbit-ring .hm-hex {
+  pointer-events: auto;
+}
+
+.hm-hex {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--hex-size, 64px);
+  height: var(--hex-size, 64px);
+  margin: calc(var(--hex-size, 64px) / -2) 0 0 calc(var(--hex-size, 64px) / -2);
+  /* Radius uses stage size — % on translate would be relative to the hex itself. */
+  transform: rotate(calc(360deg * var(--i) / var(--n)))
+    translateY(calc(var(--orbit-size) * var(--radius-factor, 0.42) * -1))
+    rotate(calc(-360deg * var(--i) / var(--n)));
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 3;
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.hm-hex__bob {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  animation: hm-float 3.2s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 0.12s);
+}
+
+@keyframes hm-float {
+  0%,
+  100% {
+    transform: translateY(0);
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35));
+  }
+  50% {
+    transform: translateY(-6px);
+    filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.5));
+  }
+}
+
+.hm-hex__frame {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  background: var(--hex-border, #dc2626);
+  box-sizing: border-box;
+  overflow: hidden;
+  transition: background-color 0.25s ease, filter 0.25s ease, opacity 0.25s ease;
+}
+
+.hm-hex__photo {
+  position: absolute;
+  inset: 3px;
+  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  overflow: hidden;
+  background: var(--card-bg);
+}
+
+.hm-hex--kapamilya {
+  --hex-border: #dc2626;
+}
+
+.hm-hex--kapuso {
+  --hex-border: #2563eb;
+}
+
+.hm-hex--safe .hm-hex__frame {
+  animation: hm-safe-border 2s steps(1, end) infinite;
+}
+
+@keyframes hm-safe-border {
+  0%,
+  49.9% {
+    background-color: var(--hex-border);
+  }
+  50%,
+  100% {
+    background-color: #22c55e;
+  }
+}
+
+.hm-hex--evicted .hm-hex__frame {
+  background-color: #09090b !important;
+  animation: none;
+  filter: grayscale(1);
+  opacity: 0.55;
+}
+
+.hm-hex--evicted img {
+  filter: grayscale(1);
+}
+
+.hm-hex__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+}
+
+.hm-hex__stamp {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  transform: translate(-50%, -50%) rotate(-18deg);
+  font-size: clamp(0.42rem, 1.6vw, 0.58rem);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ef4444;
+  border: 2px solid #ef4444;
+  border-radius: 4px;
+  padding: 2px 4px;
+  background: rgba(9, 9, 11, 0.55);
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.hm-hex__badge {
+  position: absolute;
+  right: 2%;
+  top: 10%;
+  width: 28%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #facc15, #ca8a04);
+  color: #18181b;
+  display: grid;
+  place-items: center;
+  font-size: 0.55rem;
+  z-index: 3;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+}
+
+.hm-hex__nickname {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  padding: 1.1em 0.35em 0.55em;
+  background: linear-gradient(to top, rgba(9, 9, 11, 0.92) 35%, rgba(9, 9, 11, 0));
+  color: #fff;
+  font-family: "Outfit", sans-serif;
+  font-size: clamp(0.48rem, 1.5vw, 0.62rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+.hm-hex.is-active .hm-hex__bob {
+  filter: drop-shadow(0 0 0 2px #fff) drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45));
+}
+
+.hm-profile-detail {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 16px 18px;
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  background: var(--card-bg);
+  box-shadow: var(--shadow-subtle);
+  display: none;
+}
+
+.hm-profile-detail.is-open {
+  display: block;
+  animation: fadeIn 0.35s ease;
+}
+
+.hm-profile-detail__head {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.hm-profile-detail__photo {
+  width: 84px;
+  height: 84px;
+  flex: 0 0 auto;
+  clip-path: polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%);
+  border: 3px solid var(--detail-border, #dc2626);
+  overflow: hidden;
+  background: var(--hover-bg);
+}
+
+.hm-profile-detail__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+
+.hm-profile-detail__meta h2 {
+  margin: 0 0 4px;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.hm-profile-detail__moniker {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.hm-profile-detail__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 14px;
+  margin-top: 14px;
+}
+
+.hm-profile-detail__item {
+  min-width: 0;
+}
+
+.hm-profile-detail__item--wide {
+  grid-column: 1 / -1;
+}
+
+.hm-profile-detail__item span {
+  display: block;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.hm-profile-detail__item strong {
+  font-size: 0.92rem;
+  font-weight: 650;
+  color: var(--text-main);
+  word-break: break-word;
+}
+
+.hm-profile-detail__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  background: var(--hover-bg);
+  color: var(--text-main);
+}
+
+.hm-profile-detail__status[data-status="safe"] {
+  background: rgba(34, 197, 94, 0.18);
+  color: #4ade80;
+}
+
+.hm-profile-detail__status[data-status="nominated"] {
+  background: rgba(234, 88, 12, 0.2);
+  color: #fb923c;
+}
+
+.hm-profile-detail__status[data-status="immunity"] {
+  background: rgba(234, 179, 8, 0.2);
+  color: #facc15;
+}
+
+.hm-profile-detail__status[data-status="evicted"] {
+  background: rgba(63, 63, 70, 0.6);
+  color: #a1a1aa;
+}
+
+.hm-profile-empty {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+  font-weight: 500;
+  padding: 24px 12px;
+}
+
+body[data-app-tab="profiles"] .bottom-nav,
+body[data-app-tab="profiles"] #header-viewer-badge,
+body[data-app-tab="profiles"] #stream-settings-toggle,
+body[data-app-tab="profiles"] #tutorial-toggle {
+  display: none !important;
+}
+
+body[data-app-tab="profiles"] .livestream-offline-float {
+  display: none !important;
+}
+
+@media (max-width: 720px) {
+  #panel-profiles {
+    padding: 10px 10px 40px;
+  }
+
+  .hm-orbit-stage {
+    --orbit-size: min(96vw, 420px);
+  }
+
+  .hm-hex {
+    --hex-size: 52px;
+  }
+
+  .hm-hex__nickname {
+    font-size: 0.48rem;
+    padding: 1em 0.25em 0.45em;
+  }
+
+  .hm-profile-detail__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 721px) {
+  .hm-hex {
+    --hex-size: 72px;
+  }
+}
