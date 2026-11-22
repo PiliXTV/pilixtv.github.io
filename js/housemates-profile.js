@@ -181,17 +181,17 @@
     }
 
     bob.appendChild(frame);
+    el.appendChild(bob);
 
-    // Badge sits outside the clipped frame so it stays in front on the flat top.
+    // Badge on the hex button (not bob) so bob's float filter cannot clip it.
     if (statusHighlight(hm, "immunity") && !hm.evicted) {
       var badge = document.createElement("span");
       badge.className = "hm-hex__badge";
       badge.title = "Immunity";
       badge.innerHTML = '<i class="fas fa-shield-halved" aria-hidden="true"></i>';
-      bob.appendChild(badge);
+      el.appendChild(badge);
     }
 
-    el.appendChild(bob);
     return el;
   }
 
