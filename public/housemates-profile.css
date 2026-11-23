@@ -89,9 +89,16 @@
   margin: 8px auto 24px;
   border-radius: 50%;
   overflow: visible;
+  touch-action: none;
+  cursor: grab;
+  user-select: none;
   background:
     radial-gradient(circle at 50% 45%, rgba(39, 39, 42, 0.55) 0%, transparent 62%),
     radial-gradient(circle at 50% 50%, rgba(24, 24, 27, 0.9) 0%, transparent 70%);
+}
+
+.hm-orbit-stage.is-spinning {
+  cursor: grabbing;
 }
 
 .hm-orbit-center {
@@ -123,11 +130,13 @@
 }
 
 .hm-orbit-ring {
+  --spin: 0deg;
   position: absolute;
   inset: 0;
   overflow: visible;
   /* Allow clicks to pass through empty ring space to hexes on the other ring. */
   pointer-events: none;
+  will-change: transform;
 }
 
 .hm-orbit-ring .hm-hex {
@@ -146,12 +155,12 @@
   width: var(--hex-w);
   height: var(--hex-h);
   margin: calc(var(--hex-h) / -2) 0 0 calc(var(--hex-w) / -2);
-  /* --phase offsets inner ring so each hex sits between two outer hexes. */
-  transform: rotate(calc(360deg * var(--i) / var(--n) + var(--phase)))
+  /* --phase nests inner hexes; --spin (from parent ring) turns the wheel. */
+  transform: rotate(calc(360deg * var(--i) / var(--n) + var(--phase) + var(--spin, 0deg)))
     translateY(calc(var(--orbit-size) * var(--radius-factor, 0.42) * -1))
-    rotate(calc(-1 * (360deg * var(--i) / var(--n) + var(--phase))));
+    rotate(calc(-1 * (360deg * var(--i) / var(--n) + var(--phase) + var(--spin, 0deg))));
   pointer-events: auto;
-  cursor: pointer;
+  cursor: grab;
   z-index: 3;
   border: 0;
   padding: 0;
