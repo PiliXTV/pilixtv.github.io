@@ -18,6 +18,13 @@
   var loaded = false;
   var byId = {};
 
+  // Wheel-of-fortune spin state (degrees) for each ring.
+  var spin = { outer: 0, inner: 0 };
+  var spinVel = { outer: 0, inner: 0 };
+  var spinRaf = 0;
+  var drag = null;
+  var suppressClickUntil = 0;
+
   function parseCsvLine(line) {
     var out = [];
     var cur = "";
@@ -218,6 +225,11 @@
     });
   }
 
+  function applySpinCss() {
+    if (outerRing) outerRing.style.setProperty("--spin", spin.outer + "deg");
+    if (innerRing) innerRing.style.setProperty("--spin", spin.inner + "deg");
+  }
+
   function renderRings() {
     // Always show every housemate; status chips only restyle borders/badges.
     var kapamilya = housemates.filter(function (hm) {
@@ -235,6 +247,127 @@
     renderRing(outerRing, outerList, 0.43, "outer", 0);
     // Tighter radius so inner hexes sit a little closer to each other.
     renderRing(innerRing, innerList, 0.24, "inner", nestPhase);
+    applySpinCss();
+  }
+
+  function stagePoint(e) {
+    var rect = stage.getBoundingClientRect();
+    var cx = rect.left + rect.width / 2;
+    var cy = rect.top + rect.height / 2;
+    var clientX = e.clientX;
+    var clientY = e.clientY;
+    if (e.touches && e.touches[0]) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else if (e.changedTouches && e.changedTouches[0]) {
+      clientX = e.changedTouches[0].clientX;
+      clientY = e.changedTouches[0].clientY;
+    }
+    var dx = clientX - cx;
+    var dy = clientY - cy;
+    return {
+      dx: dx,
+      dy: dy,
+      dist: Math.sqrt(dx * dx + dy * dy),
+      angle: (Math.atan2(dy, dx) * 180) / Math.PI,
+      radius: rect.width / 2,
+      t: performance.now(),
+    };
+  }
+
+  function pickRing(dist, radius) {
+    // Outer band vs inner band by distance from center.
+    var norm = dist / Math.max(radius, 1);
+    if (norm < 0.12) return null; // logo hub
+    if (norm < 0.34) return "inner";
+    return "outer";
+  }
+
+  function stopInertia() {
+    if (spinRaf) {
+      cancelAnimationFrame(spinRaf);
+      spinRaf = 0;
+    }
+  }
+
+  function tickInertia() {
+    spinRaf = 0;
+    var friction = 0.965;
+    var minVel = 0.08;
+    var moving = false;
+    ["outer", "inner"].forEach(function (key) {
+      if (Math.abs(spinVel[key]) > minVel) {
+        spin[key] += spinVel[key];
+        spinVel[key] *= friction;
+        moving = true;
+      } else {
+        spinVel[key] = 0;
+      }
+    });
+    applySpinCss();
+    if (moving) spinRaf = requestAnimationFrame(tickInertia);
+  }
+
+  function startInertia() {
+    stopInertia();
+    spinRaf = requestAnimationFrame(tickInertia);
+  }
+
+  function onPointerDown(e) {
+    if (!stage || e.button === 2) return;
+    // Ignore filter chips etc.
+    if (e.target.closest && e.target.closest(".hm-chip")) return;
+    var pt = stagePoint(e);
+    var ring = pickRing(pt.dist, pt.radius);
+    if (!ring) return;
+
+    stopInertia();
+    spinVel.outer = 0;
+    spinVel.inner = 0;
+    drag = {
+      ring: ring,
+      lastAngle: pt.angle,
+      lastT: pt.t,
+      moved: 0,
+      pointerId: e.pointerId,
+    };
+    stage.classList.add("is-spinning");
+    try {
+      stage.setPointerCapture(e.pointerId);
+    } catch (err) {}
+    e.preventDefault();
+  }
+
+  function onPointerMove(e) {
+    if (!drag) return;
+    var pt = stagePoint(e);
+    var delta = pt.angle - drag.lastAngle;
+    // Unwrap across ±180 so swipe stays smooth.
+    if (delta > 180) delta -= 360;
+    if (delta < -180) delta += 360;
+
+    spin[drag.ring] += delta;
+    var dt = Math.max(1, pt.t - drag.lastT);
+    // deg per frame-ish velocity for inertia
+    spinVel[drag.ring] = delta * (16 / dt) * 1.15;
+    drag.moved += Math.abs(delta);
+    drag.lastAngle = pt.angle;
+    drag.lastT = pt.t;
+    applySpinCss();
+    e.preventDefault();
+  }
+
+  function onPointerUp(e) {
+    if (!drag) return;
+    if (drag.moved > 4) {
+      suppressClickUntil = performance.now() + 350;
+      startInertia();
+    }
+    drag = null;
+    stage.classList.remove("is-spinning");
+    try {
+      if (e.pointerId != null) stage.releasePointerCapture(e.pointerId);
+    } catch (err) {}
   }
 
   function renderDetail(hm) {
@@ -343,7 +476,24 @@
   }
 
   if (stage) {
+    stage.addEventListener("pointerdown", onPointerDown);
+    stage.addEventListener("pointermove", onPointerMove);
+    stage.addEventListener("pointerup", onPointerUp);
+    stage.addEventListener("pointercancel", onPointerUp);
+    stage.addEventListener("lostpointercapture", function () {
+      if (drag) {
+        if (drag.moved > 4) startInertia();
+        drag = null;
+        stage.classList.remove("is-spinning");
+      }
+    });
+
     stage.addEventListener("click", function (e) {
+      if (performance.now() < suppressClickUntil) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
       var hex = e.target.closest(".hm-hex");
       if (!hex || !stage.contains(hex)) return;
       var id = parseInt(hex.dataset.id, 10);
