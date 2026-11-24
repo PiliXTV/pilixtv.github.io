@@ -22,7 +22,8 @@
   var spin = { outer: 0, inner: 0 };
   var spinVel = { outer: 0, inner: 0 };
   var spinRaf = 0;
-  var drag = null;
+  // pointerId -> { ring, lastAngle, lastT, moved } — both rings can spin at once.
+  var drags = {};
   var suppressClickUntil = 0;
 
   function parseCsvLine(line) {
@@ -254,15 +255,9 @@
     var rect = stage.getBoundingClientRect();
     var cx = rect.left + rect.width / 2;
     var cy = rect.top + rect.height / 2;
+    // Pointer events expose the correct finger via clientX/Y.
     var clientX = e.clientX;
     var clientY = e.clientY;
-    if (e.touches && e.touches[0]) {
-      clientX = e.touches[0].clientX;
-      clientY = e.touches[0].clientY;
-    } else if (e.changedTouches && e.changedTouches[0]) {
-      clientX = e.changedTouches[0].clientX;
-      clientY = e.changedTouches[0].clientY;
-    }
     var dx = clientX - cx;
     var dy = clientY - cy;
     return {
@@ -283,11 +278,18 @@
     return "outer";
   }
 
-  function stopInertia() {
-    if (spinRaf) {
-      cancelAnimationFrame(spinRaf);
-      spinRaf = 0;
-    }
+  function ringBeingDragged(ring) {
+    return Object.keys(drags).some(function (id) {
+      return drags[id] && drags[id].ring === ring;
+    });
+  }
+
+  function anyDragActive() {
+    return Object.keys(drags).length > 0;
+  }
+
+  function ensureInertia() {
+    if (!spinRaf) spinRaf = requestAnimationFrame(tickInertia);
   }
 
   function tickInertia() {
@@ -296,6 +298,8 @@
     var minVel = 0.08;
     var moving = false;
     ["outer", "inner"].forEach(function (key) {
+      // Leave a ring alone while the user is actively dragging it.
+      if (ringBeingDragged(key)) return;
       if (Math.abs(spinVel[key]) > minVel) {
         spin[key] += spinVel[key];
         spinVel[key] *= friction;
@@ -305,12 +309,7 @@
       }
     });
     applySpinCss();
-    if (moving) spinRaf = requestAnimationFrame(tickInertia);
-  }
-
-  function startInertia() {
-    stopInertia();
-    spinRaf = requestAnimationFrame(tickInertia);
+    if (moving || anyDragActive()) spinRaf = requestAnimationFrame(tickInertia);
   }
 
   function onPointerDown(e) {
@@ -320,25 +319,26 @@
     var pt = stagePoint(e);
     var ring = pickRing(pt.dist, pt.radius);
     if (!ring) return;
+    // One pointer per ring; the other ring can keep coasting or be spun separately.
+    if (ringBeingDragged(ring)) return;
 
-    stopInertia();
-    spinVel.outer = 0;
-    spinVel.inner = 0;
-    drag = {
+    spinVel[ring] = 0;
+    drags[e.pointerId] = {
       ring: ring,
       lastAngle: pt.angle,
       lastT: pt.t,
       moved: 0,
-      pointerId: e.pointerId,
     };
     stage.classList.add("is-spinning");
     try {
       stage.setPointerCapture(e.pointerId);
     } catch (err) {}
+    ensureInertia();
     e.preventDefault();
   }
 
   function onPointerMove(e) {
+    var drag = drags[e.pointerId];
     if (!drag) return;
     var pt = stagePoint(e);
     var delta = pt.angle - drag.lastAngle;
@@ -358,13 +358,16 @@
   }
 
   function onPointerUp(e) {
+    var drag = drags[e.pointerId];
     if (!drag) return;
     if (drag.moved > 4) {
       suppressClickUntil = performance.now() + 350;
-      startInertia();
+    } else {
+      spinVel[drag.ring] = 0;
     }
-    drag = null;
-    stage.classList.remove("is-spinning");
+    delete drags[e.pointerId];
+    if (!anyDragActive()) stage.classList.remove("is-spinning");
+    ensureInertia();
     try {
       if (e.pointerId != null) stage.releasePointerCapture(e.pointerId);
     } catch (err) {}
@@ -480,12 +483,13 @@
     stage.addEventListener("pointermove", onPointerMove);
     stage.addEventListener("pointerup", onPointerUp);
     stage.addEventListener("pointercancel", onPointerUp);
-    stage.addEventListener("lostpointercapture", function () {
-      if (drag) {
-        if (drag.moved > 4) startInertia();
-        drag = null;
-        stage.classList.remove("is-spinning");
-      }
+    stage.addEventListener("lostpointercapture", function (e) {
+      var drag = drags[e.pointerId];
+      if (!drag) return;
+      if (drag.moved <= 4) spinVel[drag.ring] = 0;
+      delete drags[e.pointerId];
+      if (!anyDragActive()) stage.classList.remove("is-spinning");
+      ensureInertia();
     });
 
     stage.addEventListener("click", function (e) {
